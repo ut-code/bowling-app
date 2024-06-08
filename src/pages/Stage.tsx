@@ -8,6 +8,7 @@ import { createArrowGuide, createBall, createObstacles, createPins, createWalls 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
+const INITIAL_BALL_POSITION = { x: 400, y: 500 }
 
 interface Props {
   stageElement: StageElements
@@ -28,7 +29,7 @@ export default function Stage(props: Props) {
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
 
-  const [ballPositionX, setBallPositionX] = useState(400)
+  const [ballPositionX, setBallPositionX] = useState(INITIAL_BALL_POSITION.x)
 
   const updateBallPositionX = (newPositionX: number) => {
     if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
@@ -88,9 +89,9 @@ export default function Stage(props: Props) {
         // ピンとボールの衝突
         if (
           (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) &&
-          (bodyA === ball || bodyB === ball)
+          (bodyA === ballRef.current || bodyB === ballRef.current)
         ) {
-          const pin = bodyA === ball ? bodyB : bodyA
+          const pin = bodyA === ballRef.current ? bodyB : bodyA
           Matter.Body.setStatic(pin, false)
         }
 
@@ -103,18 +104,18 @@ export default function Stage(props: Props) {
         // 障害物とボールの衝突
         if (
           (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
-          (bodyA === ball || bodyB === ball)
+          (bodyA === ballRef.current || bodyB === ballRef.current)
         ) {
-          Matter.Body.setPosition(ball, { x: 400, y: 500 })
-          Matter.Body.setStatic(ball, true)
+          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+          Matter.Body.setStatic(ballRef.current, true)
         }
         // 壁との衝突
         if (
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
-          (bodyA === ball || bodyB === ball)
+          (bodyA === ballRef.current || bodyB === ballRef.current)
         ) {
-          Matter.Body.setPosition(ball, { x: 400, y: 500 })
-          Matter.Body.setStatic(ball, true)
+          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+          Matter.Body.setStatic(ballRef.current, true)
         }
       })
     })
@@ -122,10 +123,10 @@ export default function Stage(props: Props) {
     const walls = createWalls(WALL_WIDTH)
     wallsRef.current = walls
 
-    const ball = createBall(ballPositionX)
+    const ball = createBall(INITIAL_BALL_POSITION.x)
     ballRef.current = ball
 
-    const arrowGuide = createArrowGuide(ballPositionX)
+    const arrowGuide = createArrowGuide(INITIAL_BALL_POSITION.x)
     arrowGuideRef.current = arrowGuide
 
     const pins = createPins(props.stageElement.pins)
@@ -149,8 +150,15 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
 
-  }, [ballPositionX, props.stageElement])
+  }, [props.stageElement])
   const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
+
+  useEffect(() => {
+    if (engineRef.current && ballRef.current && arrowGuideRef.current) {
+      Matter.Body.setPosition(ballRef.current, { x: ballPositionX, y: ballRef.current.position.y })
+      Matter.Body.setPosition(arrowGuideRef.current, { x: ballPositionX, y: arrowGuideRef.current.position.y })
+    }
+  }, [ballPositionX])
 
   // ピンの移動を確認し、スコアを更新する関数
   useEffect(() => {
