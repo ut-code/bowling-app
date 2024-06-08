@@ -20,6 +20,7 @@ export type Obstacle = {
 }
 
 export type StageElements = {
+  stageNumber: number
   obstacles: Obstacle[]
   pins: Pin[]
 }
@@ -36,7 +37,7 @@ export default function App() {
         <button onClick={() => setUiState("Score")}>Score</button>
       </Grid>
       {uiState === "Start" && <Start setUiState={setUiState} />}
-      {uiState === "Play" && <Play />}
+      {uiState === "Play" && <Play setScores={setScores} />}
       {uiState === "Score" && <Score scores={scores} />}
     </Grid>
   )

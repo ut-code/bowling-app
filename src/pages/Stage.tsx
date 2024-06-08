@@ -6,7 +6,7 @@ const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
 
-export default function Example() {
+export default function Stage() {
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
