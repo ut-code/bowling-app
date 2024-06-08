@@ -173,6 +173,7 @@ export default function Example() {
 
   return (
     <div>
+      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
       <Button
         onClick={() => {
           updateBallPositionX(ballPositionX - 10)
@@ -190,7 +191,6 @@ export default function Example() {
       >
         →
       </Button>
-      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
     </div>
   )
 }

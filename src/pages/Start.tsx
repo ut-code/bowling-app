@@ -23,7 +23,7 @@ function Start(props: Props) {
         }}
       >
         <TextField id="outlined-basic" label="名前" variant="outlined" />
-        <RedButton onClick={() => props.setUiState("Example")}>プレイ</RedButton>
+        <RedButton onClick={() => props.setUiState("Play")}>プレイ</RedButton>
       </div>
     </>
   )
