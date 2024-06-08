@@ -14,8 +14,8 @@ interface Props {
   setStageNumber: (stageNumber: number) => void
   setScores: (scores: TypeScore[]) => void
   score: number // スコアを受け取るプロップス
-  // setScore: (score: number) => void // スコアを更新するプロップス
-  setScore: React.Dispatch<React.SetStateAction<number>>
+  // setScore: (score: number) => void
+  setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
 
 export default function Stage(props: Props) {
@@ -75,6 +75,23 @@ export default function Stage(props: Props) {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair
+
+        // 壁との衝突のみを検知
+        if (
+          (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
+          (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB))
+        ) {
+          let pin: Matter.Body | null = null
+          if (pinsRef.current?.includes(bodyA)) {
+            pin = bodyA
+          }
+          if (pinsRef.current?.includes(bodyB)) {
+            pin = bodyB
+          }
+          if (pin) {
+            Matter.World.remove(engine.world, pin) // 衝突したピンを削除
+          }
+        }
 
         // ピンとの衝突
         if (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) {
@@ -203,28 +220,25 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
   }, [ballPositionX])
-// ピンの移動を確認し、スコアを更新する関数
-// ピンの移動を確認し、スコアを更新する関数
-useEffect(() => {
-  const checkPinMovement = () => {
-    if (pinsRef.current) {
-      pinsRef.current.forEach((pin, index) => {
-        const originalPin = props.stageElement!.pins[index]
-        const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
-        if (moved) {
-          // 直接新しいスコア値を渡す
-          props.setScore((prevScore: number) => prevScore + 1)
-        }
-      })
+  // ピンの移動を確認し、スコアを更新する関数
+  useEffect(() => {
+    const checkPinMovement = () => {
+      if (pinsRef.current) {
+        pinsRef.current.forEach((pin, index) => {
+          const originalPin = props.stageElement!.pins[index]
+          const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
+          if (moved) {
+            // 直接新しいスコア値を渡す
+            props.setScore((prevScore: number) => prevScore + 1)
+          }
+        })
+      }
     }
-  }
 
-  const interval = setInterval(checkPinMovement, 1000)
+    const interval = setInterval(checkPinMovement, 1000)
 
-  return () => clearInterval(interval)
-}, [props.stageElement!.pins, props.setScore])
-
-
+    return () => clearInterval(interval)
+  }, [props.stageElement!.pins, props.setScore])
 
   function handleThrowClick() {
     if (ballRef.current) {
