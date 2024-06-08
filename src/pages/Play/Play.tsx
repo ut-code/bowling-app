@@ -59,7 +59,8 @@ const stageElements: StageElements[] = [
 
 interface Props {
   setUiState: (uiState: string) => void
-  setScores: React.Dispatch<React.SetStateAction<GameScore[]>>
+  gameScores: GameScore[]
+  setGameScores: React.Dispatch<React.SetStateAction<GameScore[]>>
 }
 
 export default function Play(props: Props) {
@@ -82,9 +83,11 @@ export default function Play(props: Props) {
     <Grid>
       <Stage
         stageElement={stageElement}
+        totalStageCount={stageElements.length}
         stageNumber={stageNumber}
         handleNextStage={handleNextStage}
-        setScores={props.setScores}
+        gameScores={props.gameScores}
+        setGameScores={props.setGameScores}
         score={score} // スコアをStageコンポーネントに渡す
         setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
       />

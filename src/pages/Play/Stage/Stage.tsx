@@ -12,9 +12,11 @@ const INITIAL_BALL_POSITION = { x: 400, y: 500 }
 
 interface Props {
   stageElement: StageElements
+  totalStageCount: number
   stageNumber: number
   handleNextStage: () => void
-  setScores: React.Dispatch<React.SetStateAction<GameScore[]>>
+  gameScores: GameScore[]
+  setGameScores: React.Dispatch<React.SetStateAction<GameScore[]>>
   score: number // スコアを受け取るプロップス
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
@@ -199,7 +201,7 @@ export default function Stage(props: Props) {
 
   return (
     <>
-      <StageHeader score={props.score} stageNumber={props.stageNumber} />
+      <StageHeader totalStageCount={props.totalStageCount} gameScores={props.gameScores} score={props.score} stageNumber={props.stageNumber} />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
       <Button
         onClick={() => {
