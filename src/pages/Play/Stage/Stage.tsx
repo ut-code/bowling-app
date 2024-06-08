@@ -1,4 +1,5 @@
-import { Button } from "@mui/material"
+import { Button, IconButton } from "@mui/material"
+import { RotateLeft, RotateRight } from "@mui/icons-material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
 import { StageElements, TypeScore } from "../../../App"
@@ -8,6 +9,7 @@ const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
 const INITIAL_BALL_POSITION = { x: 400, y: 500 }
+const INITIAL_GRAVITY = { x: 0, y: -3 }
 
 interface Props {
   stageElement: StageElements
@@ -52,7 +54,8 @@ export default function Stage(props: Props) {
   useEffect(() => {
     if (!canvasRef.current) return
     const engine = Matter.Engine.create()
-    engine.gravity.y = -3
+    engine.gravity.x = INITIAL_GRAVITY.x
+    engine.gravity.y = INITIAL_GRAVITY.y
 
     const render = Matter.Render.create({
       element: canvasRef.current,
@@ -124,6 +127,12 @@ export default function Stage(props: Props) {
             })
           }
         }
+
+        // 重力方向は常にリセット
+        if (engineRef.current) {
+          engineRef.current.gravity.x = INITIAL_GRAVITY.x
+          engineRef.current.gravity.y = INITIAL_GRAVITY.y
+        }
       })
     })
 
@@ -180,13 +189,22 @@ export default function Stage(props: Props) {
     return () => clearInterval(interval)
   }, [movedPins, props, props.stageElement.pins])
 
-  function moveBallPositionX (dx: number) {
+  function moveBallPositionX(dx: number) {
     if (!ballRef.current) return
     if (!arrowGuideRef.current) return
     const newPositionX = ballRef.current.position.x + dx
     if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
     Matter.Body.setPosition(ballRef.current, { x: newPositionX, y: ballRef.current.position.y })
     Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
+  }
+
+  /**
+   * 重力の方向を変更する関数。ボールの方向コントロールに使用。
+   * @param dx 正だと右回転、負だと左回転。重力ベクトル(x, y)のxへの加算。
+   */
+  function changeGravityAngle(dx: number) {
+    if (!engineRef.current) return
+    engineRef.current.gravity.x += dx
   }
 
   function throwBall() {
@@ -218,6 +236,20 @@ export default function Stage(props: Props) {
       >
         →
       </Button>
+      <IconButton
+        onClick={() => {
+          changeGravityAngle(-0.1)
+        }}
+      >
+        <RotateLeft />
+      </IconButton>
+      <IconButton
+        onClick={() => {
+          changeGravityAngle(0.1)
+        }}
+      >
+        <RotateRight />
+      </IconButton>
       <Button onClick={props.handleNextStage}>Next Stage</Button>
     </div>
   )
