@@ -4,7 +4,6 @@ import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
 import { StageElements, TypeScore } from "../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../matterBodies"
-import ballImg from "../assets/bowling_ball.png"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600

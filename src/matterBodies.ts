@@ -1,5 +1,6 @@
 import Matter from "matter-js"
 import { Obstacle, Pin } from "./App"
+import ballImg from "./assets/bowling_ball.png"
 
 export function createArrowGuide(ballPositionX: number) {
   return Matter.Body.create({
@@ -64,6 +65,11 @@ export function createBall(ballPositionX: number) {
     restitution: 0.3,
     render: {
       fillStyle: "blue",
+      sprite: {
+        texture: ballImg,
+        xScale: 0.3,
+        yScale: 0.3,
+      },
     },
   })
 }
