@@ -11,7 +11,7 @@ const WALL_WIDTH = 50
 interface Props {
   stageElement: StageElements
   stageNumber: number
-  handleNextStage: (stageNumber: number) => void
+  handleNextStage: () => void
   setScores: (scores: TypeScore[]) => void
   score: number // スコアを受け取るプロップス
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス

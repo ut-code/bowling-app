@@ -74,21 +74,6 @@ export default function Play(props: Props) {
     return <div>ステージが見つかりません</div>
   }
 
-  return (
-    <div>
-      <Stage
-        stageElement={stageElement}
-        stageNumber={stageNumber}
-        setStageNumber={setStageNumber}
-        setScores={props.setScores}
-        score={score} // スコアをStageコンポーネントに渡す
-        setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
-      />
-      <Score score={score} /> // スコアを表示するコンポーネント
-    </div>
-  )
-
-
   const handleNextStage = () => {
     if (stageNumber === stageElements.length - 1) {
       props.setUiState("Score")
@@ -96,11 +81,17 @@ export default function Play(props: Props) {
     }
     setStageNumber((number) => number + 1)
   }
-
-  const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
-
-  if (!stageElement) {
-    return <div>Stage Not Found</div>
-  }
-  return <Stage stageElement={stageElement} stageNumber={stageNumber} handleNextStage={handleNextStage} setScores={props.setScores} />
+  return (
+    <div>
+      <Stage
+        stageElement={stageElement}
+        stageNumber={stageNumber}
+        handleNextStage={handleNextStage}
+        setScores={props.setScores}
+        score={score} // スコアをStageコンポーネントに渡す
+        setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
+      />
+      <Score score={score} />
+    </div>
+  )
 }
