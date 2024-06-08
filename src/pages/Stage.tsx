@@ -91,12 +91,14 @@ export default function Stage(props: Props) {
         if (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) {
           if (bodyA === ball || bodyB === ball) {
             Matter.Body.setPosition(ball, { x: 400, y: 500 })
+            Matter.Body.setStatic(ball, true)
           }
         }
         // 壁との衝突
         if (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) {
           if (bodyA === ball || bodyB === ball) {
             Matter.Body.setPosition(ball, { x: 400, y: 500 })
+            Matter.Body.setStatic(ball, true)
           }
         }
       })
