@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Example from "./pages/Example";
+import Start from "./pages/Start";
 
 function App() {
   const [uiState, setUiState] = useState("Start");
   
   return (
     <div>
-      {uiState === "Start" && <p>start</p>}
+      {uiState === "Start" && <Start />}
       {uiState === "Score" && <p>score</p>}
       {uiState === "Example" && <Example />}
       <button onClick={() => setUiState("Example")}>Example</button>
