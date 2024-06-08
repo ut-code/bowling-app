@@ -1,7 +1,7 @@
 import { useState } from "react"
-import Example from "./pages/Example"
-import Score from "./pages/Score"
 import Start from "./pages/Start"
+import Play from "./pages/Play"
+import Score from "./pages/Score"
 import { Grid } from "@mui/material"
 
 export type TypeScore = {
@@ -17,12 +17,12 @@ export default function App() {
     <Grid container direction="column" alignItems="center" justifyContent="center" width={"100vw"} spacing={2}>
       <Grid direction="row">
         <button onClick={() => setUiState("Start")}>Start</button>
-        <button onClick={() => setUiState("Example")}>Example</button>
+        <button onClick={() => setUiState("Play")}>Play</button>
         <button onClick={() => setUiState("Score")}>Score</button>
       </Grid>
-      {uiState === "Score" && <Score scores={scores} />}
       {uiState === "Start" && <Start setUiState={setUiState} />}
-      {uiState === "Example" && <Example />}
+      {uiState === "Play" && <Play />}
+      {uiState === "Score" && <Score scores={scores} />}
     </Grid>
   )
 }
