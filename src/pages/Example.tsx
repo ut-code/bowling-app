@@ -1,79 +1,121 @@
-import { Button } from "@mui/material";
-import Matter from "matter-js";
-import { useEffect, useRef, useState } from "react";
+import { Button } from "@mui/material"
+import Matter from "matter-js"
+import { useEffect, useRef, useState } from "react"
 
-const RENDERER_WIDTH = 800;
-const RENDERER_HEIGHT = 600;
-const WALL_WIDTH = 50;
+const RENDERER_WIDTH = 800
+const RENDERER_HEIGHT = 600
+const WALL_WIDTH = 50
 
 export default function Example() {
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
   const arrowGuideRef = useRef<Matter.Body | null>(null);
+  const canvasRef = useRef(null)
+  const pinsRef = useRef<Matter.Body[] | null>(null)
+  const obstaclesRef = useRef<Matter.Body[] | null>(null)
+  const wallsRef = useRef<Matter.Body[] | null>(null)
 
-  const [ballPositionX, setBallPositionX] = useState(400);
+  const [ballPositionX, setBallPositionX] = useState(400)
 
   const updateBallPositionX = (newPositionX: number) => {
-    if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return;
-    setBallPositionX(newPositionX);
-  };
+    if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
+    setBallPositionX(newPositionX)
+  }
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowRight") {
-        updateBallPositionX(ballPositionX + 10);
+        updateBallPositionX(ballPositionX + 10)
       }
       if (event.key === "ArrowLeft") {
-        updateBallPositionX(ballPositionX - 10);
+        updateBallPositionX(ballPositionX - 10)
       }
       if (event.key === " ") {
-        handleThrowClick();
+        handleThrowClick()
       }
-    };
+    }
 
     // コンポーネントがマウントされたら、イベントリスナーを追加
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown)
 
     // クリーンアップ関数
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [ballPositionX]);
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [ballPositionX])
 
   useEffect(() => {
-    // エンジンの作成
-    const engine = Matter.Engine.create();
+    if (!canvasRef.current) return
+    const engine = Matter.Engine.create()
+    engine.gravity.y = -3
 
-    engine.gravity.y = -3;
-
-    // レンダラーの作成
     const render = Matter.Render.create({
-      element: document.body,
+      element: canvasRef.current,
       engine: engine,
       options: {
         width: RENDERER_WIDTH,
         height: RENDERER_HEIGHT,
         wireframes: false,
       },
-    });
+    })
+
+    //     const handleWallCollision = (event: Matter.IEventCollision<Matter.Engine>) => {
+    //       const pairs = event.pairs
+    // )
+    //     }
+
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair
+
+        // ピンとの衝突
+        if (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) {
+          if (bodyA === ball || bodyB === ball) {
+            const pin = bodyA === ball ? bodyB : bodyA
+            Matter.Body.setStatic(pin, false)
+          }
+
+          // ピン同士の衝突
+          if (pinsRef.current?.includes(bodyA) && pinsRef.current?.includes(bodyB)) {
+            Matter.Body.setStatic(bodyA, false)
+            Matter.Body.setStatic(bodyB, false)
+          }
+        }
+
+        // 障害物との衝突
+        if (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) {
+          if (bodyA === ball || bodyB === ball) {
+            Matter.Body.setPosition(ball, { x: 400, y: 500 })
+          }
+        }
+        // 壁との衝突
+        if (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) {
+          if (bodyA === ball || bodyB === ball) {
+            Matter.Body.setPosition(ball, { x: 400, y: 500 })
+          }
+        }
+      })
+    })
 
     const walls = [
       Matter.Bodies.rectangle(400, 0, 800, WALL_WIDTH, { isStatic: true }),
       Matter.Bodies.rectangle(400, 600, 800, WALL_WIDTH, { isStatic: true }),
       Matter.Bodies.rectangle(800, 300, WALL_WIDTH, 600, { isStatic: true }),
       Matter.Bodies.rectangle(0, 300, WALL_WIDTH, 600, { isStatic: true }),
-    ];
+    ]
+    wallsRef.current = walls
 
-    const ball = Matter.Bodies.circle(ballPositionX, 500, 20, {
+    const ball = Matter.Bodies.circle(ballPositionX, 500, 22, {
       isStatic: true,
       collisionFilter: { category: 0x0001, mask: 0x0001 },
       frictionAir: 0.02,
+      restitution: 0.3,
       render: {
         fillStyle: "blue",
       },
-    });
-    ballRef.current = ball;
+    })
+    ballRef.current = ball
 
     const arrowGuide = Matter.Body.create({
       isStatic: true,
@@ -122,51 +164,84 @@ export default function Example() {
 
     // 世界にボディを追加
     Matter.World.add(engine.world, [ball, ...walls, arrowGuide]);
+    const pinPositions = [
+      { x: 400, y: 260 },
+      { x: 380, y: 240 },
+      { x: 420, y: 240 },
+      { x: 360, y: 220 },
+      { x: 400, y: 220 },
+      { x: 440, y: 220 },
+      { x: 340, y: 200 },
+      { x: 380, y: 200 },
+      { x: 420, y: 200 },
+      { x: 460, y: 200 },
+    ]
 
-    // エンジンとレンダラーの実行
-    Matter.Engine.run(engine);
-    Matter.Render.run(render);
+    const pins = pinPositions.map((position) =>
+      Matter.Bodies.circle(position.x, position.y, 6, {
+        isStatic: true,
+        density: 1,
+        render: {
+          fillStyle: "white",
+        },
+      }),
+    )
+    pinsRef.current = pins
 
-    engineRef.current = engine;
-    renderRef.current = render;
+    function createRectangleObstacle(x: number, y: number) {
+      return Matter.Bodies.rectangle(x, y, 200, 50, {
+        isStatic: true,
+        render: { fillStyle: "#ff0000" },
+      })
+    }
+
+    const obstacles = [createRectangleObstacle(500, 300), createRectangleObstacle(200, 300)]
+    obstaclesRef.current = obstacles
+
+    engineRef.current = engine
+    renderRef.current = render
+
+    Matter.World.add(engine.world, [ball, ...walls, ...pins, ...obstacles])
+
+    Matter.Engine.run(engine)
+    Matter.Render.run(render)
 
     // コンポーネントのアンマウント時にレンダラーとエンジンを停止
     return () => {
-      Matter.Render.stop(render);
-      Matter.Engine.clear(engine);
-      render.canvas.remove();
-    };
-  }, [ballPositionX]);
+      Matter.Render.stop(render)
+      Matter.Engine.clear(engine)
+      render.canvas.remove()
+    }
+  }, [ballPositionX])
 
   function handleThrowClick() {
     if (ballRef.current) {
-      Matter.Body.setStatic(ballRef.current, false);
+      Matter.Body.setStatic(ballRef.current, false)
     }
     if (engineRef.current && arrowGuideRef.current) {
       Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
     }
-
-    return (
-      <div>
-        <h1>Matter.js with React</h1>
-        <Button
-          onClick={() => {
-            updateBallPositionX(ballPositionX - 10);
-          }}
-        >
-          ←
-        </Button>
-        <Button onClick={handleThrowClick} variant="contained">
-          Throw!
-        </Button>
-        <Button
-          onClick={() => {
-            updateBallPositionX(ballPositionX + 10);
-          }}
-        >
-          →
-        </Button>
-      </div>
-    );
   }
+  return (
+    <div>
+      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
+      <Button
+        onClick={() => {
+          updateBallPositionX(ballPositionX - 10)
+        }}
+      >
+        ←
+      </Button>
+      <Button onClick={handleThrowClick} variant="contained">
+        Throw!
+      </Button>
+      <Button
+        onClick={() => {
+          updateBallPositionX(ballPositionX + 10)
+        }}
+      >
+        →
+      </Button>
+    </div>
+  )
 }
