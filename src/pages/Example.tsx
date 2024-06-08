@@ -83,7 +83,6 @@ export default function Example() {
 
   return (
     <div>
-      <h1>Matter.js with React</h1>
     </div>
   );
 }

@@ -19,13 +19,17 @@ function App() {
       direction="column"
       alignItems="center"
       justifyContent="center"
+      width={"100vw"}
+      spacing={2}
     >
+      <Grid direction="row">
+        <button onClick={() => setUiState("Example")}>Example</button>
+        <button onClick={() => setUiState("Start")}>Start</button>
+        <button onClick={() => setUiState("Score")}>Score</button>
+      </Grid>
       {uiState === "Score" && <Score scores={scores} />}
       {uiState === "Start" && <Start setUiState={setUiState}/>}
       {uiState === "Example" && <Example />}
-      <button onClick={() => setUiState("Example")}>Example</button>
-      <button onClick={() => setUiState("Start")}>Start</button>
-      <button onClick={() => setUiState("Score")}>Score</button>
     </Grid>
   );
 }

@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import { TypeScore } from "../App";
 
 interface Props {
@@ -15,34 +15,27 @@ export default function Score(props: Props) {
   ];
 
   return (
-    <Grid
-      container
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <div>
-        <h1>Score</h1>
-        <h1>{currentScore}点</h1>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>ステージ</TableCell>
-                <TableCell>点数</TableCell>
+    <div>
+      <h1>Score</h1>
+      <h1>{currentScore}点</h1>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ステージ</TableCell>
+              <TableCell>点数</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {scores.map((score) => (
+              <TableRow key={score.stage}>
+                <TableCell>{score.stage}</TableCell>
+                <TableCell>{score.score}</TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {scores.map((score) => (
-                <TableRow key={score.stage}>
-                  <TableCell>{score.stage}</TableCell>
-                  <TableCell>{score.score}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-    </Grid>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }
