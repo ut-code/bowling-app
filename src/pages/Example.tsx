@@ -7,6 +7,7 @@ const RENDERER_HEIGHT = 600;
 const WALL_WIDTH = 50;
 
 export default function Example() {
+	const canvasRef = useRef(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
@@ -41,11 +42,12 @@ export default function Example() {
   }, [ballPositionX]);
 
   useEffect(() => {
+		if (!canvasRef.current) return;
     const engine = Matter.Engine.create();
     engine.gravity.y = -3;
 
     const render = Matter.Render.create({
-      element: document.body,
+      element: canvasRef.current,
       engine: engine,
       options: {
         width: RENDERER_WIDTH,
@@ -64,16 +66,6 @@ export default function Example() {
         }
       });
     };
-
-    // const leftWall = Matter.Bodies.rectangle(0, 300, 50, 600, {
-    //   isStatic: true,
-    //   render: { fillStyle: "#8B4513" },
-    // });
-
-    // const rightWall = Matter.Bodies.rectangle(800, 300, 50, 600, {
-    //   isStatic: true,
-    //   render: { fillStyle: "#8B4515" },
-    // });
 
     Matter.Events.on(engine, "collisionStart", handleWallCollision);
 
@@ -127,7 +119,6 @@ export default function Example() {
 
   return (
     <div>
-      <h1>Matter.js with React</h1>
       <Button
         onClick={() => {
           updateBallPositionX(ballPositionX - 10);
@@ -145,6 +136,7 @@ export default function Example() {
       >
         →
       </Button>
+			<div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
     </div>
   );
 }
