@@ -1,7 +1,7 @@
 import { useState } from "react"
-import Start from "./pages/Start"
-import Play from "./pages/Play"
-import Score from "./pages/Score"
+import Start from "./pages/Start/Start"
+import Play from "./pages/Play/Play"
+import Score from "./pages/Score/Score"
 import { Grid } from "@mui/material"
 
 export type TypeScore = {

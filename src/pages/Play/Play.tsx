@@ -1,8 +1,7 @@
-// pages/Play.tsx
 import { useState } from "react"
-import { StageElements, TypeScore } from "../App"
-import Stage from "./Stage"
-import StageHeader from "../components/StageHeader"
+import { StageElements, TypeScore } from "../../App"
+import Stage from "./Stage/Stage"
+import StageHeader from "./Stage/StageHeader"
 
 const stageElements: StageElements[] = [
   {

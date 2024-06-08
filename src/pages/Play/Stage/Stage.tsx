@@ -1,8 +1,8 @@
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
-import { StageElements, TypeScore } from "../App"
-import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../matterBodies"
+import { StageElements, TypeScore } from "../../../App"
+import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
