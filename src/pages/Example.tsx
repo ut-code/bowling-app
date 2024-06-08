@@ -116,7 +116,7 @@ export default function Example() {
     engineRef.current = engine;
     renderRef.current = render;
 
-    Matter.World.add(engine.world, [ball, ...walls, ...obstacles]);
+    Matter.World.add(engine.world, [ball, ...walls, ...pins, ...obstacles]);
 
     Matter.Engine.run(engine);
     Matter.Render.run(render);
