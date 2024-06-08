@@ -2,6 +2,7 @@ import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
 import { StageElements, TypeScore } from "../App"
+import ballImg from "../assets/bowling_ball.png"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
@@ -116,6 +117,11 @@ export default function Stage(props: Props) {
       restitution: 0.3,
       render: {
         fillStyle: "blue",
+        sprite: {
+          texture: ballImg,
+          xScale: 0.3,
+          yScale: 0.3,
+        },
       },
     })
     ballRef.current = ball
