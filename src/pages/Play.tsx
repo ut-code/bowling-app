@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { StageElements, TypeScore } from "../App"
 import Stage from "./Stage"
-import Score from "../components/Score"
+import StageHeader from "../components/StageHeader"
 
 const stageElements: StageElements[] = [
   {
@@ -83,6 +83,7 @@ export default function Play(props: Props) {
   }
   return (
     <div>
+      <StageHeader score={score} stageNumber={stageNumber} />
       <Stage
         stageElement={stageElement}
         stageNumber={stageNumber}
@@ -91,7 +92,6 @@ export default function Play(props: Props) {
         score={score} // スコアをStageコンポーネントに渡す
         setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
       />
-      <Score score={score} />
     </div>
   )
 }

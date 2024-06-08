@@ -31,12 +31,6 @@ export default function App() {
 
   return (
     <Grid container direction="column" alignItems="center" justifyContent="center" width={"100vw"} spacing={2}>
-      <Grid direction="row">
-        <button onClick={() => setUiState("Start")}>Start</button>
-        <button onClick={() => setUiState("Play")}>Play</button>
-        <button onClick={() => setUiState("Score")}>Score</button>
-      </Grid>
-      {/* 消す */}
       {uiState === "Start" && <Start setUiState={setUiState} />}
       {uiState === "Play" && <Play setUiState={setUiState} setScores={setScores} />}
       {uiState === "Score" && <Score setUiState={setUiState} scores={scores} />}
