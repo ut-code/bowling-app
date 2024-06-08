@@ -28,21 +28,23 @@ export default function Stage(props: Props) {
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
 
-  const [ballPositionX, setBallPositionX] = useState(INITIAL_BALL_POSITION.x)
-
-  const updateBallPositionX = (newPositionX: number) => {
+  const moveBallPositionX = (dx: number) => {
+    if (!ballRef.current) return
+    if (!arrowGuideRef.current) return
+    const newPositionX = ballRef.current.position.x + dx
     if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
-    setBallPositionX(newPositionX)
+    Matter.Body.setPosition(ballRef.current, { x: newPositionX, y: ballRef.current.position.y })
+    Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
   }
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "ArrowRight":
-          updateBallPositionX(ballPositionX + 10)
+          moveBallPositionX(10)
           break
         case "ArrowLeft":
-          updateBallPositionX(ballPositionX - 10)
+          moveBallPositionX(-10)
           break
         case " ":
           handleThrowClick()
@@ -54,7 +56,7 @@ export default function Stage(props: Props) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [ballPositionX])
+  }, [])
 
   useEffect(() => {
     if (!canvasRef.current) return
@@ -98,7 +100,7 @@ export default function Stage(props: Props) {
           Matter.Body.setStatic(bodyA, false)
           Matter.Body.setStatic(bodyB, false)
         }
-        
+
         // 障害物とボールの衝突
         if (
           (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
@@ -109,6 +111,10 @@ export default function Stage(props: Props) {
           Matter.Body.setStatic(ballRef.current, true)
           if (arrowGuideRef.current) {
             Matter.World.add(engine.world, [arrowGuideRef.current])
+            Matter.Body.setPosition(arrowGuideRef.current, {
+              x: INITIAL_BALL_POSITION.x,
+              y: arrowGuideRef.current.position.y,
+            })
           }
         }
         // 壁との衝突
@@ -121,6 +127,10 @@ export default function Stage(props: Props) {
           Matter.Body.setStatic(ballRef.current, true)
           if (arrowGuideRef.current) {
             Matter.World.add(engine.world, [arrowGuideRef.current])
+            Matter.Body.setPosition(arrowGuideRef.current, {
+              x: INITIAL_BALL_POSITION.x,
+              y: arrowGuideRef.current.position.y,
+            })
           }
         }
       })
@@ -155,16 +165,8 @@ export default function Stage(props: Props) {
       Matter.Engine.clear(engine)
       render.canvas.remove()
     }
-
   }, [props.stageElement])
   const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
-
-  useEffect(() => {
-    if (engineRef.current && ballRef.current && arrowGuideRef.current) {
-      Matter.Body.setPosition(ballRef.current, { x: ballPositionX, y: ballRef.current.position.y })
-      Matter.Body.setPosition(arrowGuideRef.current, { x: ballPositionX, y: arrowGuideRef.current.position.y })
-    }
-  }, [ballPositionX])
 
   // ピンの移動を確認し、スコアを更新する関数
   useEffect(() => {
@@ -174,16 +176,16 @@ export default function Stage(props: Props) {
           const originalPin = props.stageElement.pins[index]
           const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
           if (moved && !movedPins[index]) {
-            props.setScore((prevScore) => prevScore + 1)  // スコアを更新
+            props.setScore((prevScore) => prevScore + 1) // スコアを更新
             // ピンの移動状態を更新する
             setMovedPins((prevMovedPins) => ({ ...prevMovedPins, [index]: true }))
           }
         })
       }
     }
-  
+
     const interval = setInterval(checkPinMovement, 1000)
-  
+
     return () => clearInterval(interval)
   }, [movedPins, props, props.stageElement.pins])
 
@@ -201,7 +203,7 @@ export default function Stage(props: Props) {
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
       <Button
         onClick={() => {
-          updateBallPositionX(ballPositionX - 10)
+          moveBallPositionX(-10)
         }}
       >
         ←
@@ -211,7 +213,7 @@ export default function Stage(props: Props) {
       </Button>
       <Button
         onClick={() => {
-          updateBallPositionX(ballPositionX + 10)
+          moveBallPositionX(10)
         }}
       >
         →
