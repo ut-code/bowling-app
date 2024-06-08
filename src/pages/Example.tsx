@@ -11,6 +11,8 @@ export default function Example() {
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
+	const pinsRef = useRef<Matter.Body[] | null>(null);
+	const obstaclesRef = useRef<Matter.Body[] | null>(null);
 
   const [ballPositionX, setBallPositionX] = useState(400);
 
@@ -76,32 +78,49 @@ export default function Example() {
       Matter.Bodies.rectangle(0, 300, WALL_WIDTH, 600, { isStatic: true }),
     ];
 
-    const ball = Matter.Bodies.circle(ballPositionX, 500, 20, {
+    const ball = Matter.Bodies.circle(ballPositionX, 500, 22, {
       isStatic: true,
       frictionAir: 0.02,
       restitution: 0.3,
       render: {
         fillStyle: "blue",
-      },
-      isStatic: true,
+      }
     });
     ballRef.current = ball;
-    engineRef.current = engine;
-    renderRef.current = render;
+
+		const pinPositions = [
+      { x: 400, y: 260 },
+      { x: 380, y: 240 }, { x: 420, y: 240 },
+      { x: 360, y: 220 }, { x: 400, y: 220 }, { x: 440, y: 220 },
+      { x: 340, y: 200 }, { x: 380, y: 200 }, { x: 420, y: 200 }, { x: 460, y: 200 },
+    ];
+
+    const pins = pinPositions.map((position) =>
+      Matter.Bodies.circle(position.x, position.y, 6, {
+        isStatic: true,
+        density: 1,
+        render: {
+          fillStyle: "white",
+        },
+      })
+    );
+		pinsRef.current = pins;
 
     const obstacle = Matter.Bodies.rectangle(400, 300, 200, 50, {
       isStatic: true,
       render: { fillStyle: "#ff0000" },
     });
-    ballRef.current = ball;
+		const obstacles = [obstacle];
+		obstaclesRef.current = obstacles;
 
-    Matter.World.add(engine.world, [ball, ...walls, obstacle]);
+    engineRef.current = engine;
+    renderRef.current = render;
+
+    Matter.World.add(engine.world, [ball, ...walls, ...obstacles]);
 
     Matter.Engine.run(engine);
     Matter.Render.run(render);
 
-    engineRef.current = engine;
-    renderRef.current = render;
 
     // コンポーネントのアンマウント時にレンダラーとエンジンを停止
     return () => {
