@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { StageElements } from "../App"
+import Example from "./Example"
 // import { Example } from "../components/Example";
 
 export default function Play() {
@@ -22,5 +23,5 @@ export default function Play() {
     },
   ])
 
-  return <div>Play</div>
+  return <Example />
 }
