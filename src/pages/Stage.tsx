@@ -158,7 +158,7 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
 
-  }, [props.stageElement])
+  }, [props.stageElement, updateArrowGuide])
   const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
 
   useEffect(() => {
