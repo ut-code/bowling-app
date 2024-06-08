@@ -41,12 +41,9 @@ export default function Example() {
   }, [ballPositionX]);
 
   useEffect(() => {
-    // エンジンの作成
     const engine = Matter.Engine.create();
-
     engine.gravity.y = -3;
 
-    // レンダラーの作成
     const render = Matter.Render.create({
       element: document.body,
       engine: engine,
@@ -56,6 +53,29 @@ export default function Example() {
         wireframes: false,
       },
     });
+
+    const handleWallCollision = (
+      event: Matter.IEventCollision<Matter.Engine>
+    ) => {
+      const pairs = event.pairs;
+      pairs.forEach((pair) => {
+        if (pair.bodyA === ball || pair.bodyB === ball) {
+          Matter.Body.setPosition(ball, { x: 400, y: 500 });
+        }
+      });
+    };
+
+    // const leftWall = Matter.Bodies.rectangle(0, 300, 50, 600, {
+    //   isStatic: true,
+    //   render: { fillStyle: "#8B4513" },
+    // });
+
+    // const rightWall = Matter.Bodies.rectangle(800, 300, 50, 600, {
+    //   isStatic: true,
+    //   render: { fillStyle: "#8B4515" },
+    // });
+
+    Matter.Events.on(engine, "collisionStart", handleWallCollision);
 
     const walls = [
       Matter.Bodies.rectangle(400, 0, 800, WALL_WIDTH, { isStatic: true }),
@@ -67,16 +87,24 @@ export default function Example() {
     const ball = Matter.Bodies.circle(ballPositionX, 500, 20, {
       isStatic: true,
       frictionAir: 0.02,
+      restitution: 0.3,
       render: {
         fillStyle: "blue",
       },
+      isStatic: true,
+    });
+    ballRef.current = ball;
+    engineRef.current = engine;
+    renderRef.current = render;
+
+    const obstacle = Matter.Bodies.rectangle(400, 300, 200, 50, {
+      isStatic: true,
+      render: { fillStyle: "#ff0000" },
     });
     ballRef.current = ball;
 
-    // 世界にボディを追加
-    Matter.World.add(engine.world, [ball, ...walls]);
+    Matter.World.add(engine.world, [ball, ...walls, obstacle]);
 
-    // エンジンとレンダラーの実行
     Matter.Engine.run(engine);
     Matter.Render.run(render);
 

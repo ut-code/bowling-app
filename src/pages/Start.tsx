@@ -1,21 +1,20 @@
-import { Button, TextField, styled } from "@mui/material";
+import { Button, TextField, styled } from "@mui/material"
 interface Props {
-  setUiState: ( uiState: string) => void
+  setUiState: (uiState: string) => void
 }
 
 function Start(props: Props) {
   const RedButton = styled(Button)({
-    backgroundColor: "red",
+    backgroundColor: "#D25E5E",
     "&:hover": {
       backgroundColor: "darkred",
     },
     color: "white",
-    width: 436,
-    height: 77,
-  });
+    width: "100%",
+  })
   return (
     <>
-      <h1>ボーリング.js</h1>
+      <h1>ボウリング.js</h1>
       <div
         style={{
           display: "flex",
@@ -27,7 +26,7 @@ function Start(props: Props) {
         <RedButton onClick={() => props.setUiState("Example")}>プレイ</RedButton>
       </div>
     </>
-  );
+  )
 }
 
-export default Start;
+export default Start
