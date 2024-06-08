@@ -10,8 +10,8 @@ function Start(props: Props) {
       backgroundColor: "darkred",
     },
     color: "white",
-    width: 436,
-    height: 77,
+    width: "100%",
+    // height: 77,
   });
   return (
     <>

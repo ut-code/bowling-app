@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from "@mui/material";
 import { TypeScore } from "../App";
-import Flex from '@react-css/flex';
 
 interface Props {
   scores: TypeScore[];
@@ -16,7 +15,12 @@ export default function Score(props: Props) {
   ];
 
   return (
-    <Flex justifyContent = "center">
+    <Grid
+      container
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+    >
       <div>
         <h1>Score</h1>
         <h1>{currentScore}点</h1>
@@ -39,6 +43,6 @@ export default function Score(props: Props) {
           </Table>
         </TableContainer>
       </div>
-    </Flex>
+    </Grid>
   );
 }
