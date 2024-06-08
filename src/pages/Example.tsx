@@ -33,26 +33,22 @@ export default function Example() {
       },
     });
 
-		const pins = [
-      Matter.Bodies.circle(400, 200, 20, {
-        isStatic: true,
-        render: {
-          fillStyle: "white",
-        },
-      }),
-      Matter.Bodies.circle(440, 200, 20, {
-        isStatic: true,
-        render: {
-          fillStyle: "white",
-        },
-      }),
-      Matter.Bodies.circle(360, 200, 20, {
-        isStatic: true,
-        render: {
-          fillStyle: "white",
-        },
-      }),
+		const pinPositions = [
+      { x: 400, y: 260 },
+      { x: 380, y: 240 }, { x: 420, y: 240 },
+      { x: 360, y: 220 }, { x: 400, y: 220 }, { x: 440, y: 220 },
+      { x: 340, y: 200 }, { x: 380, y: 200 }, { x: 420, y: 200 }, { x: 460, y: 200 },
     ];
+
+    const pins = pinPositions.map((position) =>
+      Matter.Bodies.circle(position.x, position.y, 10, {
+        isStatic: true,
+        density: 0.001,
+        render: {
+          fillStyle: "white",
+        },
+      })
+    );
 
     // 世界にボディを追加
     Matter.World.add(engine.world, [ball, ...walls, ...pins]);
@@ -63,7 +59,6 @@ export default function Example() {
         if (pair.bodyA === ball || pair.bodyB === ball) {
           const pin = pair.bodyA === ball ? pair.bodyB : pair.bodyA;
           Matter.Body.setStatic(pin, false);
-          Matter.Body.setVelocity(pin, { x: 0, y: -5 });
         }
       });
     });
