@@ -1,8 +1,10 @@
+// pages/Stage.tsx
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
 import { StageElements, TypeScore } from "../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../matterBodies"
+import ballImg from "../assets/bowling_ball.png"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
@@ -13,6 +15,8 @@ interface Props {
   stageNumber: number
   handleNextStage: () => void
   setScores: (scores: TypeScore[]) => void
+  score: number // スコアを受け取るプロップス
+  setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
 
 export default function Stage(props: Props) {
@@ -72,6 +76,15 @@ export default function Stage(props: Props) {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair
+
+        // 壁との衝突のみを検知
+        if (
+          (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
+          (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB))
+        ) {
+          const pin = pinsRef.current?.includes(bodyA) ? bodyA : bodyB
+          Matter.World.remove(engine.world, pin) // 衝突したピンを削除
+        }
 
         // ピンとの衝突
         if (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) {
@@ -133,7 +146,30 @@ export default function Stage(props: Props) {
       Matter.Engine.clear(engine)
       render.canvas.remove()
     }
+
   }, [ballPositionX, props.stageElement])
+  const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
+
+  // ピンの移動を確認し、スコアを更新する関数
+  useEffect(() => {
+    const checkPinMovement = () => {
+      if (pinsRef.current) {
+        pinsRef.current.forEach((pin, index) => {
+          const originalPin = props.stageElement.pins[index]
+          const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
+          if (moved && !movedPins[index]) {
+            props.setScore((prevScore) => prevScore + 1)  // スコアを更新
+            // ピンの移動状態を更新する
+            setMovedPins((prevMovedPins) => ({ ...prevMovedPins, [index]: true }))
+          }
+        })
+      }
+    }
+  
+    const interval = setInterval(checkPinMovement, 1000)
+  
+    return () => clearInterval(interval)
+  }, [props.stageElement.pins, props.setScore, movedPins])
 
   function handleThrowClick() {
     if (ballRef.current) {

@@ -1,6 +1,8 @@
+// pages/Play.tsx
 import { useState } from "react"
 import { StageElements, TypeScore } from "../App"
 import Stage from "./Stage"
+import StageHeader from "../components/StageHeader"
 
 const stageElements: StageElements[] = [
   {
@@ -64,6 +66,14 @@ interface Props {
 export default function Play(props: Props) {
   const [stageNumber, setStageNumber] = useState(0)
 
+  const [score, setScore] = useState(0) // スコアの状態を管理
+
+
+  const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
+  if (!stageElement) {
+    return <div>ステージが見つかりません</div>
+  }
+
   const handleNextStage = () => {
     if (stageNumber === stageElements.length - 1) {
       props.setUiState("Score")
@@ -71,11 +81,17 @@ export default function Play(props: Props) {
     }
     setStageNumber((number) => number + 1)
   }
-
-  const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
-
-  if (!stageElement) {
-    return <div>Stage Not Found</div>
-  }
-  return <Stage stageElement={stageElement} stageNumber={stageNumber} handleNextStage={handleNextStage} setScores={props.setScores} />
+  return (
+    <div>
+      <StageHeader score={score} stageNumber={stageNumber} />
+      <Stage
+        stageElement={stageElement}
+        stageNumber={stageNumber}
+        handleNextStage={handleNextStage}
+        setScores={props.setScores}
+        score={score} // スコアをStageコンポーネントに渡す
+        setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
+      />
+    </div>
+  )
 }
