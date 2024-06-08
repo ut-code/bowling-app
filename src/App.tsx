@@ -9,6 +9,21 @@ export type TypeScore = {
   score: number
 }
 
+export type Pin = {
+  x: number
+  y: number
+}
+
+export type Obstacle = {
+  x: number
+  y: number
+}
+
+export type StageElements = {
+  obstacles: Obstacle[]
+  pins: Pin[]
+}
+
 export default function App() {
   const [uiState, setUiState] = useState("Start")
   const [scores, setScores] = useState<TypeScore[]>([])
