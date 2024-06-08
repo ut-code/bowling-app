@@ -7,7 +7,7 @@ function App() {
   
   return (
     <div>
-      {uiState === "Start" && <Start />}
+      {uiState === "Start" && <Start setUiState={setUiState}/>}
       {uiState === "Score" && <p>score</p>}
       {uiState === "Example" && <Example />}
       <button onClick={() => setUiState("Example")}>Example</button>
