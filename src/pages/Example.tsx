@@ -6,6 +6,8 @@ export default function Example() {
     // エンジンの作成
     const engine = Matter.Engine.create();
 
+    engine.gravity.y = -3;
+
     // レンダラーの作成
     const render = Matter.Render.create({
       element: document.body,
@@ -17,19 +19,22 @@ export default function Example() {
       },
     });
 
-    // 固定された地面を作成
-    const ground = Matter.Bodies.rectangle(400, 550, 800, 60, { isStatic: true });
+    const walls = [
+      Matter.Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
+      Matter.Bodies.rectangle(400, 600, 800, 50, { isStatic: true }),
+      Matter.Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
+      Matter.Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
+    ];
 
-    // ボールを作成
-    const ball = Matter.Bodies.circle(400, 100, 50, {
-      density: 0.04,
-      frictionAir: 0.005,
-      restitution: 0.8,
-      friction: 0.01,
+    const ball = Matter.Bodies.circle(400, 500, 20, {
+      frictionAir: 0.02,
+      render: {
+        fillStyle: "blue",
+      },
     });
 
     // 世界にボディを追加
-    Matter.World.add(engine.world, [ball, ground]);
+    Matter.World.add(engine.world, [ball, ...walls]);
 
     // エンジンとレンダラーの実行
     Matter.Engine.run(engine);
