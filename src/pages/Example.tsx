@@ -33,8 +33,40 @@ export default function Example() {
       },
     });
 
+		const pins = [
+      Matter.Bodies.circle(400, 200, 20, {
+        isStatic: true,
+        render: {
+          fillStyle: "white",
+        },
+      }),
+      Matter.Bodies.circle(440, 200, 20, {
+        isStatic: true,
+        render: {
+          fillStyle: "white",
+        },
+      }),
+      Matter.Bodies.circle(360, 200, 20, {
+        isStatic: true,
+        render: {
+          fillStyle: "white",
+        },
+      }),
+    ];
+
     // 世界にボディを追加
-    Matter.World.add(engine.world, [ball, ...walls]);
+    Matter.World.add(engine.world, [ball, ...walls, ...pins]);
+
+		// ピンの接触時の動きを設定
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        if (pair.bodyA === ball || pair.bodyB === ball) {
+          const pin = pair.bodyA === ball ? pair.bodyB : pair.bodyA;
+          Matter.Body.setStatic(pin, false);
+          Matter.Body.setVelocity(pin, { x: 0, y: -5 });
+        }
+      });
+    });
 
     // エンジンとレンダラーの実行
     Matter.Engine.run(engine);
