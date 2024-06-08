@@ -26,7 +26,7 @@ export default function Example() {
       Matter.Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
     ];
 
-    const ball = Matter.Bodies.circle(400, 500, 20, {
+    const ball = Matter.Bodies.circle(400, 500, 22, {
       frictionAir: 0.02,
       render: {
         fillStyle: "blue",
@@ -41,9 +41,9 @@ export default function Example() {
     ];
 
     const pins = pinPositions.map((position) =>
-      Matter.Bodies.circle(position.x, position.y, 10, {
+      Matter.Bodies.circle(position.x, position.y, 6, {
         isStatic: true,
-        density: 0.001,
+        density: 1,
         render: {
           fillStyle: "white",
         },
@@ -56,10 +56,16 @@ export default function Example() {
 		// ピンの接触時の動きを設定
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
-        if (pair.bodyA === ball || pair.bodyB === ball) {
-          const pin = pair.bodyA === ball ? pair.bodyB : pair.bodyA;
+				const { bodyA, bodyB } = pair;
+        if (bodyA === ball || bodyB === ball) {
+          const pin = bodyA === ball ? bodyB : bodyA;
           Matter.Body.setStatic(pin, false);
         }
+				// ピン同士
+				if (pins.includes(bodyA) && pins.includes(bodyB)) {
+					Matter.Body.setStatic(bodyA, false);
+					Matter.Body.setStatic(bodyB, false);
+				}
       });
     });
 
