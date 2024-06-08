@@ -3,9 +3,10 @@ import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
 import { StageElements, TypeScore } from "../../../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
+import StageHeader from "./StageHeader"
 
 const RENDERER_WIDTH = 800
-const RENDERER_HEIGHT = 600
+const RENDERER_HEIGHT = 550
 const WALL_WIDTH = 50
 const INITIAL_BALL_POSITION = { x: 400, y: 500 }
 
@@ -197,8 +198,9 @@ export default function Stage(props: Props) {
   }
 
   return (
-    <div>
-      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
+    <>
+      <StageHeader score={props.score} stageNumber={props.stageNumber} />
+      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
       <Button
         onClick={() => {
           updateBallPositionX(ballPositionX - 10)
@@ -217,6 +219,6 @@ export default function Stage(props: Props) {
         →
       </Button>
       <Button onClick={props.handleNextStage}>Next Stage</Button>
-    </div>
+    </>
   )
 }

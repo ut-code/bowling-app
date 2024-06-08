@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { StageElements, TypeScore } from "../../App"
 import Stage from "./Stage/Stage"
-import StageHeader from "./Stage/StageHeader"
 
 const stageElements: StageElements[] = [
   {
@@ -82,7 +81,6 @@ export default function Play(props: Props) {
   }
   return (
     <div>
-      <StageHeader score={score} stageNumber={stageNumber} />
       <Stage
         stageElement={stageElement}
         stageNumber={stageNumber}
