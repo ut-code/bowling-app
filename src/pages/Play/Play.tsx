@@ -5,7 +5,7 @@ import Stage from "./Stage/Stage"
 
 const stageElements: StageElements[] = [
   {
-    stageNumber: 0,
+    stageNumber: 1,
     obstacles: [{ x: 200, y: 300 }],
     pins: [
       { x: 400, y: 110 },
@@ -21,7 +21,7 @@ const stageElements: StageElements[] = [
     ],
   },
   {
-    stageNumber: 1,
+    stageNumber: 2,
     obstacles: [{ x: 400, y: 300 }],
     pins: [
       { x: 400, y: 110 },
@@ -37,7 +37,7 @@ const stageElements: StageElements[] = [
     ],
   },
   {
-    stageNumber: 2,
+    stageNumber: 3,
     obstacles: [
       { x: 100, y: 100 },
       { x: 700, y: 100 },
@@ -64,7 +64,7 @@ interface Props {
 }
 
 export default function Play(props: Props) {
-  const [stageNumber, setStageNumber] = useState(0)
+  const [stageNumber, setStageNumber] = useState(1)
   const [score, setScore] = useState(0) // スコアの状態を管理
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)

@@ -17,8 +17,8 @@ export default function StageHeader(props: Props) {
       justifyContent="space-between"
       alignItems="center"
     >
-      {/* <h3>ステージ{props.stageNumber}</h3>
-      <h3>スコア: {props.score}</h3> */}
+      <h3>ステージ{props.stageNumber}</h3>
+      <h3>スコア: {props.score}</h3>
       <ScoreSheet gameScores={props.gameScores} />
     </Grid>  
   )
