@@ -11,7 +11,7 @@ const WALL_WIDTH = 50
 interface Props {
   stageElement: StageElements | undefined
   stageNumber: number
-  setStageNumber: (stageNumber: number) => void
+  handleNextStage: (stageNumber: number) => void
   setScores: (scores: TypeScore[]) => void
   score: number // スコアを受け取るプロップス
   // setScore: (score: number) => void
@@ -219,7 +219,8 @@ export default function Stage(props: Props) {
       Matter.Engine.clear(engine)
       render.canvas.remove()
     }
-  }, [ballPositionX])
+
+  }, [ballPositionX, props.stageElement])
   const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
 
   // ピンの移動を確認し、スコアを更新する関数
@@ -244,6 +245,7 @@ export default function Stage(props: Props) {
   }, [props.stageElement!.pins, props.setScore, movedPins])
   
 
+
   function handleThrowClick() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false)
@@ -252,6 +254,7 @@ export default function Stage(props: Props) {
       Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
     }
   }
+
   return (
     <div>
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
@@ -271,6 +274,11 @@ export default function Stage(props: Props) {
         }}
       >
         →
+      </Button>
+      <Button
+        onClick={props.handleNextStage}
+      >
+        Next Stage
       </Button>
     </div>
   )
