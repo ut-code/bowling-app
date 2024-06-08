@@ -1,6 +1,8 @@
+// pages/Play.tsx
 import { useState } from "react"
 import { StageElements, TypeScore } from "../App"
 import Stage from "./Stage"
+import Score from "../components/Score"
 
 interface Props {
   setScores: (scores: TypeScore[]) => void
@@ -8,6 +10,7 @@ interface Props {
 
 export default function Play(props: Props) {
   const [stageNumber, setStageNumber] = useState(0)
+  const [score, setScore] = useState(0)  // スコアの状態を管理
   const stageElements: StageElements[] = [
     {
       stageNumber: 0,
@@ -29,5 +32,17 @@ export default function Play(props: Props) {
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
 
-  return <Stage stageElement={stageElement} stageNumber={stageNumber} setStageNumber={setStageNumber} setScores={props.setScores} />
+  return (
+    <div>
+      <Stage
+        stageElement={stageElement}
+        stageNumber={stageNumber}
+        setStageNumber={setStageNumber}
+        setScores={props.setScores}
+        score={score}  // スコアをStageコンポーネントに渡す
+        setScore={setScore}  // スコアを更新する関数をStageコンポーネントに渡す
+      />
+      <Score score={score} />  // スコアを表示するコンポーネント
+    </div>
+  )
 }

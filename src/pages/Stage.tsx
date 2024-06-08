@@ -1,3 +1,4 @@
+// pages/Stage.tsx
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
@@ -8,17 +9,20 @@ const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
 
 interface Props {
-  stageElement: StageElements
+  stageElement: StageElements | undefined
   stageNumber: number
   setStageNumber: (stageNumber: number) => void
   setScores: (scores: TypeScore[]) => void
+  score: number // スコアを受け取るプロップス
+  // setScore: (score: number) => void // スコアを更新するプロップス
+  setScore: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default function Stage(props: Props) {
-  const engineRef = useRef<Matter.Engine | null>(null);
-  const renderRef = useRef<Matter.Render | null>(null);
-  const ballRef = useRef<Matter.Body | null>(null);
-  const arrowGuideRef = useRef<Matter.Body | null>(null);
+  const engineRef = useRef<Matter.Engine | null>(null)
+  const renderRef = useRef<Matter.Render | null>(null)
+  const ballRef = useRef<Matter.Body | null>(null)
+  const arrowGuideRef = useRef<Matter.Body | null>(null)
   const canvasRef = useRef(null)
   const pinsRef = useRef<Matter.Body[] | null>(null)
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
@@ -67,11 +71,6 @@ export default function Stage(props: Props) {
         wireframes: false,
       },
     })
-
-    //     const handleWallCollision = (event: Matter.IEventCollision<Matter.Engine>) => {
-    //       const pairs = event.pairs
-    // )
-    //     }
 
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
@@ -145,7 +144,7 @@ export default function Stage(props: Props) {
             render: {
               fillStyle: "rgba(255, 0, 0, 0.5)",
             },
-          }
+          },
         ),
         Matter.Bodies.fromVertices(
           ballPositionX,
@@ -164,13 +163,13 @@ export default function Stage(props: Props) {
             render: {
               fillStyle: "rgba(255, 0, 0, 0.5)",
             },
-          }
+          },
         ),
       ],
-    });
-    arrowGuideRef.current = arrowGuide;
+    })
+    arrowGuideRef.current = arrowGuide
 
-    const pins = props.stageElement.pins.map((position) =>
+    const pins = props.stageElement!.pins.map((position) =>
       Matter.Bodies.circle(position.x, position.y, 6, {
         isStatic: true,
         density: 1,
@@ -181,7 +180,7 @@ export default function Stage(props: Props) {
     )
     pinsRef.current = pins
 
-    const obstacles = props.stageElement.obstacles.map((position) =>
+    const obstacles = props.stageElement!.obstacles.map((position) =>
       Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
         isStatic: true,
         render: { fillStyle: "#ff0000" },
@@ -204,13 +203,35 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
   }, [ballPositionX])
+// ピンの移動を確認し、スコアを更新する関数
+// ピンの移動を確認し、スコアを更新する関数
+useEffect(() => {
+  const checkPinMovement = () => {
+    if (pinsRef.current) {
+      pinsRef.current.forEach((pin, index) => {
+        const originalPin = props.stageElement!.pins[index]
+        const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
+        if (moved) {
+          // 直接新しいスコア値を渡す
+          props.setScore((prevScore: number) => prevScore + 1)
+        }
+      })
+    }
+  }
+
+  const interval = setInterval(checkPinMovement, 1000)
+
+  return () => clearInterval(interval)
+}, [props.stageElement!.pins, props.setScore])
+
+
 
   function handleThrowClick() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false)
     }
     if (engineRef.current && arrowGuideRef.current) {
-      Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
     }
   }
   return (
