@@ -136,7 +136,7 @@ export default function Stage(props: Props) {
 
     Matter.World.add(engine.world, [ball, ...walls, ...pins, ...obstacles, arrowGuide])
 
-    Matter.Engine.run(engine)
+    Matter.Runner.run(engine)
     Matter.Render.run(render)
 
     // コンポーネントのアンマウント時にレンダラーとエンジンを停止
