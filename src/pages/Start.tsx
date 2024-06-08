@@ -5,17 +5,16 @@ interface Props {
 
 function Start(props: Props) {
   const RedButton = styled(Button)({
-    backgroundColor: "red",
+    backgroundColor: "#D25E5E",
     "&:hover": {
       backgroundColor: "darkred",
     },
     color: "white",
-    width: 436,
-    height: 77,
+    width: "100%",
   });
   return (
     <>
-      <h1>ボーリング.js</h1>
+      <h1>ボウリング.js</h1>
       <div
         style={{
           display: "flex",
