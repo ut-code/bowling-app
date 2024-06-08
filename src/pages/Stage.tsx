@@ -1,4 +1,3 @@
-// pages/Stage.tsx
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
@@ -38,21 +37,20 @@ export default function Stage(props: Props) {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight") {
-        updateBallPositionX(ballPositionX + 10)
-      }
-      if (event.key === "ArrowLeft") {
-        updateBallPositionX(ballPositionX - 10)
-      }
-      if (event.key === " ") {
-        handleThrowClick()
+      switch (event.key) {
+        case "ArrowRight":
+          updateBallPositionX(ballPositionX + 10)
+          break
+        case "ArrowLeft":
+          updateBallPositionX(ballPositionX - 10)
+          break
+        case " ":
+          handleThrowClick()
+          break
       }
     }
-
-    // コンポーネントがマウントされたら、イベントリスナーを追加
     window.addEventListener("keydown", handleKeyDown)
 
-    // クリーンアップ関数
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
