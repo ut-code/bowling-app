@@ -1,7 +1,8 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from "@mui/material"
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material"
 import { TypeScore } from "../App"
 
 interface Props {
+  setUiState: (uiState: string) => void
   scores: TypeScore[]
 }
 
@@ -39,6 +40,7 @@ export default function Score(props: Props) {
           </TableBody>
         </Table>
       </TableContainer>
+      <Button onClick={() => props.setUiState("Start")}>タイトルに戻る</Button>
     </div>
   )
 }

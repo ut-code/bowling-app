@@ -10,7 +10,7 @@ const WALL_WIDTH = 50
 interface Props {
   stageElement: StageElements
   stageNumber: number
-  setStageNumber: (stageNumber: number) => void
+  handleNextStage: (stageNumber: number) => void
   setScores: (scores: TypeScore[]) => void
 }
 
@@ -67,11 +67,6 @@ export default function Stage(props: Props) {
         wireframes: false,
       },
     })
-
-    //     const handleWallCollision = (event: Matter.IEventCollision<Matter.Engine>) => {
-    //       const pairs = event.pairs
-    // )
-    //     }
 
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
@@ -203,7 +198,7 @@ export default function Stage(props: Props) {
       Matter.Engine.clear(engine)
       render.canvas.remove()
     }
-  }, [ballPositionX])
+  }, [ballPositionX, props.stageElement])
 
   function handleThrowClick() {
     if (ballRef.current) {
@@ -213,6 +208,7 @@ export default function Stage(props: Props) {
       Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
     }
   }
+
   return (
     <div>
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
@@ -232,6 +228,11 @@ export default function Stage(props: Props) {
         }}
       >
         →
+      </Button>
+      <Button
+        onClick={props.handleNextStage}
+      >
+        Next Stage
       </Button>
     </div>
   )

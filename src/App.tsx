@@ -36,9 +36,10 @@ export default function App() {
         <button onClick={() => setUiState("Play")}>Play</button>
         <button onClick={() => setUiState("Score")}>Score</button>
       </Grid>
+      {/* 消す */}
       {uiState === "Start" && <Start setUiState={setUiState} />}
-      {uiState === "Play" && <Play setScores={setScores} />}
-      {uiState === "Score" && <Score scores={scores} />}
+      {uiState === "Play" && <Play setUiState={setUiState} setScores={setScores} />}
+      {uiState === "Score" && <Score setUiState={setUiState} scores={scores} />}
     </Grid>
   )
 }
