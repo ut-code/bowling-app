@@ -7,7 +7,7 @@ interface Props {
 
 export default function Start(props: Props) {
   const RedButton = styled(Button)({
-    backgroundColor: "#D25E5E",
+    backgroundColor: "#E96A64",
     "&:hover": {
       backgroundColor: "darkred",
     },
