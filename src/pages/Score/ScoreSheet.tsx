@@ -7,21 +7,12 @@ interface Props {
 }
 
 export default function ScoreSheet(props: Props) {
-  const gameScores: GameScore[] =
-    props.gameScores.length > 0
-      ? props.gameScores
-      : [
-          { stageNumber: 1, firstThrow: null, secondThrow: 4, totalScore: 150 },
-          { stageNumber: 2, firstThrow: 5, secondThrow: 5, totalScore: 200 },
-          { stageNumber: 3, firstThrow: 10, secondThrow: null, totalScore: 240 },
-      ]
-
   return (
 		<TableContainer component={Paper}>
 			<Table>
 				<TableHead>
 					<TableRow>
-						{gameScores.map((_, index) => (
+						{props.gameScores.map((_, index) => (
 							<TableCell key={index} align="center" colSpan={2}>
 								{index + 1}
 							</TableCell>
@@ -30,7 +21,7 @@ export default function ScoreSheet(props: Props) {
 				</TableHead>
 				<TableBody>
 					<TableRow>
-						{gameScores.map((score) => (
+						{props.gameScores.map((score) => (
 							<Fragment key={score.stageNumber}>
 								<TableCell align="center">
 									{score.firstThrow === null
@@ -50,7 +41,7 @@ export default function ScoreSheet(props: Props) {
 						))}
 					</TableRow>
 					<TableRow>
-						{gameScores.map((score) => (
+						{props.gameScores.map((score) => (
 							<TableCell align="center" colSpan={2}>{score.totalScore ?? "-"}</TableCell>
 						))}
 					</TableRow>

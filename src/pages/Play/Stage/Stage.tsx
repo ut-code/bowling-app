@@ -22,6 +22,7 @@ interface Props {
 }
 
 export default function Stage(props: Props) {
+  const [currentThrow, setCurrentThrow] = useState<string | null>(null)
   const engineRef = useRef<Matter.Engine | null>(null)
   const renderRef = useRef<Matter.Render | null>(null)
   const ballRef = useRef<Matter.Body | null>(null)
@@ -187,8 +188,29 @@ export default function Stage(props: Props) {
   
     const interval = setInterval(checkPinMovement, 1000)
   
-    return () => clearInterval(interval)
-  }, [movedPins, props, props.stageElement.pins])
+    return () => {
+      clearInterval(interval)
+      switch (currentThrow) {
+        case null:
+          setCurrentThrow("first")
+          break
+        case "first":
+          if (props.score === 10) {
+            props.setGameScores([...props.gameScores, { stageNumber: props.stageNumber, firstThrow: 10, secondThrow: 0, totalScore: null }])
+            props.handleNextStage()
+            break
+          }
+          props.setGameScores([...props.gameScores, { stageNumber: props.stageNumber, firstThrow: props.score, secondThrow: null, totalScore: null }])
+          setCurrentThrow("second")
+          break
+        case "second":
+          props.setGameScores([...props.gameScores, { stageNumber: props.stageNumber, firstThrow: 999, secondThrow: 10 - props.score, totalScore: null }])
+          props.handleNextStage()
+          setCurrentThrow("first")
+          break
+      }
+    }
+  }, [movedPins, props.setScore, props.stageElement.pins])
 
   function handleThrowClick() {
     if (ballRef.current) {
@@ -201,6 +223,7 @@ export default function Stage(props: Props) {
 
   return (
     <>
+      {currentThrow}
       <StageHeader totalStageCount={props.totalStageCount} gameScores={props.gameScores} score={props.score} stageNumber={props.stageNumber} />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
       <Button
