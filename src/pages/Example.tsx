@@ -62,12 +62,20 @@ export default function Example() {
     engineRef.current = engine;
     renderRef.current = render;
 
-    const obstacle = Matter.Bodies.rectangle(400, 300, 200, 50, {
-      isStatic: true,
-      render: { fillStyle: "#ff0000" },
-    });
+    function createRectangleObstacle(x: number, y: number) {
+      return Matter.Bodies.rectangle(x, y, 200, 50, {
+          isStatic: true,
+          render: { fillStyle: "#ff0000" },
+      });
+  }
+  
 
-    Matter.World.add(engine.world, [ball, ...walls, obstacle]);
+const obstacles = [
+    createRectangleObstacle(500, 300),
+    createRectangleObstacle(200, 300)
+];
+
+    Matter.World.add(engine.world, [ball, ...walls, ...obstacles]);
 
     Matter.Engine.run(engine);
     Matter.Render.run(render);
