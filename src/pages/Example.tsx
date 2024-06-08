@@ -1,7 +1,12 @@
+import { Button } from "@mui/material";
 import Matter from "matter-js";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Example() {
+  const engineRef = useRef<Matter.Engine | null>(null);
+  const renderRef = useRef<Matter.Render | null>(null);
+  const ballRef = useRef<Matter.Body | null>(null);
+
   useEffect(() => {
     // エンジンの作成
     const engine = Matter.Engine.create();
@@ -27,11 +32,13 @@ export default function Example() {
     ];
 
     const ball = Matter.Bodies.circle(400, 500, 20, {
+      isStatic: true,
       frictionAir: 0.02,
       render: {
         fillStyle: "blue",
       },
     });
+    ballRef.current = ball;
 
     // 世界にボディを追加
     Matter.World.add(engine.world, [ball, ...walls]);
@@ -39,6 +46,9 @@ export default function Example() {
     // エンジンとレンダラーの実行
     Matter.Engine.run(engine);
     Matter.Render.run(render);
+
+    engineRef.current = engine;
+    renderRef.current = render;
 
     // コンポーネントのアンマウント時にレンダラーとエンジンを停止
     return () => {
@@ -48,9 +58,18 @@ export default function Example() {
     };
   }, []);
 
+  function handleClick() {
+    if (ballRef.current) {
+      Matter.Body.setStatic(ballRef.current, false);
+    }
+  }
+
   return (
     <div>
       <h1>Matter.js with React</h1>
+      <Button onClick={handleClick} variant="contained">
+        Throw!
+      </Button>
     </div>
   );
 }
