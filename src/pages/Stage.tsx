@@ -1,4 +1,3 @@
-// pages/Stage.tsx
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
@@ -8,6 +7,7 @@ import { createArrowGuide, createBall, createObstacles, createPins, createWalls 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
+const INITIAL_BALL_POSITION = { x: 400, y: 500 }
 
 interface Props {
   stageElement: StageElements
@@ -28,7 +28,7 @@ export default function Stage(props: Props) {
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
 
-  const [ballPositionX, setBallPositionX] = useState(400)
+  const [ballPositionX, setBallPositionX] = useState(INITIAL_BALL_POSITION.x)
 
   const updateBallPositionX = (newPositionX: number) => {
     if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
@@ -37,21 +37,20 @@ export default function Stage(props: Props) {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight") {
-        updateBallPositionX(ballPositionX + 10)
-      }
-      if (event.key === "ArrowLeft") {
-        updateBallPositionX(ballPositionX - 10)
-      }
-      if (event.key === " ") {
-        handleThrowClick()
+      switch (event.key) {
+        case "ArrowRight":
+          updateBallPositionX(ballPositionX + 10)
+          break
+        case "ArrowLeft":
+          updateBallPositionX(ballPositionX - 10)
+          break
+        case " ":
+          handleThrowClick()
+          break
       }
     }
-
-    // コンポーネントがマウントされたら、イベントリスナーを追加
     window.addEventListener("keydown", handleKeyDown)
 
-    // クリーンアップ関数
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
@@ -85,32 +84,43 @@ export default function Stage(props: Props) {
           Matter.World.remove(engine.world, pin) // 衝突したピンを削除
         }
 
-        // ピンとの衝突
-        if (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) {
-          if (bodyA === ball || bodyB === ball) {
-            const pin = bodyA === ball ? bodyB : bodyA
-            Matter.Body.setStatic(pin, false)
-          }
-
-          // ピン同士の衝突
-          if (pinsRef.current?.includes(bodyA) && pinsRef.current?.includes(bodyB)) {
-            Matter.Body.setStatic(bodyA, false)
-            Matter.Body.setStatic(bodyB, false)
-          }
+        // ピンとボールの衝突
+        if (
+          (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) &&
+          (bodyA === ballRef.current || bodyB === ballRef.current)
+        ) {
+          const pin = bodyA === ballRef.current ? bodyB : bodyA
+          Matter.Body.setStatic(pin, false)
         }
 
-        // 障害物との衝突
-        if (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) {
-          if (bodyA === ball || bodyB === ball) {
-            Matter.Body.setPosition(ball, { x: 400, y: 500 })
-            Matter.Body.setStatic(ball, true)
+        // ピン同士の衝突
+        if (pinsRef.current?.includes(bodyA) && pinsRef.current?.includes(bodyB)) {
+          Matter.Body.setStatic(bodyA, false)
+          Matter.Body.setStatic(bodyB, false)
+        }
+        
+        // 障害物とボールの衝突
+        if (
+          (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
+          (bodyA === ballRef.current || bodyB === ballRef.current)
+        ) {
+          // reset
+          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+          Matter.Body.setStatic(ballRef.current, true)
+          if (arrowGuideRef.current) {
+            Matter.World.add(engine.world, [arrowGuideRef.current])
           }
         }
         // 壁との衝突
-        if (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) {
-          if (bodyA === ball || bodyB === ball) {
-            Matter.Body.setPosition(ball, { x: 400, y: 500 })
-            Matter.Body.setStatic(ball, true)
+        if (
+          (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
+          (bodyA === ballRef.current || bodyB === ballRef.current)
+        ) {
+          // reset
+          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+          Matter.Body.setStatic(ballRef.current, true)
+          if (arrowGuideRef.current) {
+            Matter.World.add(engine.world, [arrowGuideRef.current])
           }
         }
       })
@@ -119,10 +129,10 @@ export default function Stage(props: Props) {
     const walls = createWalls(WALL_WIDTH)
     wallsRef.current = walls
 
-    const ball = createBall(ballPositionX)
+    const ball = createBall(INITIAL_BALL_POSITION.x)
     ballRef.current = ball
 
-    const arrowGuide = createArrowGuide(ballPositionX)
+    const arrowGuide = createArrowGuide(INITIAL_BALL_POSITION.x)
     arrowGuideRef.current = arrowGuide
 
     const pins = createPins(props.stageElement.pins)
@@ -136,7 +146,7 @@ export default function Stage(props: Props) {
 
     Matter.World.add(engine.world, [ball, ...walls, ...pins, ...obstacles, arrowGuide])
 
-    Matter.Engine.run(engine)
+    Matter.Runner.run(engine)
     Matter.Render.run(render)
 
     // コンポーネントのアンマウント時にレンダラーとエンジンを停止
@@ -146,8 +156,15 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
 
-  }, [ballPositionX, props.stageElement])
+  }, [props.stageElement])
   const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
+
+  useEffect(() => {
+    if (engineRef.current && ballRef.current && arrowGuideRef.current) {
+      Matter.Body.setPosition(ballRef.current, { x: ballPositionX, y: ballRef.current.position.y })
+      Matter.Body.setPosition(arrowGuideRef.current, { x: ballPositionX, y: arrowGuideRef.current.position.y })
+    }
+  }, [ballPositionX])
 
   // ピンの移動を確認し、スコアを更新する関数
   useEffect(() => {
@@ -168,7 +185,7 @@ export default function Stage(props: Props) {
     const interval = setInterval(checkPinMovement, 1000)
   
     return () => clearInterval(interval)
-  }, [props.stageElement.pins, props.setScore, movedPins])
+  }, [movedPins, props, props.stageElement.pins])
 
   function handleThrowClick() {
     if (ballRef.current) {
