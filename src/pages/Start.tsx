@@ -14,7 +14,7 @@ function Start(props: Props) {
   });
   return (
     <>
-      <h1>ボーリング.js</h1>
+      <h1>ボウリング.js</h1>
       <div
         style={{
           display: "flex",
