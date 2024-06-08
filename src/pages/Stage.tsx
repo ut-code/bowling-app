@@ -2,6 +2,7 @@ import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
 import { StageElements, TypeScore } from "../App"
+import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../matterBodies"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
@@ -15,10 +16,10 @@ interface Props {
 }
 
 export default function Stage(props: Props) {
-  const engineRef = useRef<Matter.Engine | null>(null);
-  const renderRef = useRef<Matter.Render | null>(null);
-  const ballRef = useRef<Matter.Body | null>(null);
-  const arrowGuideRef = useRef<Matter.Body | null>(null);
+  const engineRef = useRef<Matter.Engine | null>(null)
+  const renderRef = useRef<Matter.Render | null>(null)
+  const ballRef = useRef<Matter.Body | null>(null)
+  const arrowGuideRef = useRef<Matter.Body | null>(null)
   const canvasRef = useRef(null)
   const pinsRef = useRef<Matter.Body[] | null>(null)
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
@@ -101,87 +102,19 @@ export default function Stage(props: Props) {
       })
     })
 
-    const walls = [
-      Matter.Bodies.rectangle(400, 0, 800, WALL_WIDTH, { isStatic: true }),
-      Matter.Bodies.rectangle(400, 600, 800, WALL_WIDTH, { isStatic: true }),
-      Matter.Bodies.rectangle(800, 300, WALL_WIDTH, 600, { isStatic: true }),
-      Matter.Bodies.rectangle(0, 300, WALL_WIDTH, 600, { isStatic: true }),
-    ]
+    const walls = createWalls(WALL_WIDTH)
     wallsRef.current = walls
 
-    const ball = Matter.Bodies.circle(ballPositionX, 500, 22, {
-      isStatic: true,
-      collisionFilter: { category: 0x0001, mask: 0x0001 },
-      frictionAir: 0.02,
-      restitution: 0.3,
-      render: {
-        fillStyle: "blue",
-      },
-    })
+    const ball = createBall(ballPositionX)
     ballRef.current = ball
 
-    const arrowGuide = Matter.Body.create({
-      isStatic: true,
-      collisionFilter: { category: 0x0001, mask: 0x0002 },
-      parts: [
-        Matter.Bodies.fromVertices(
-          ballPositionX,
-          100,
-          [
-            [
-              { x: 400, y: 280 },
-              { x: 450, y: 350 },
-              { x: 350, y: 350 },
-            ],
-          ],
-          {
-            isStatic: true,
-            collisionFilter: { category: 0x0001, mask: 0x0002 },
-            render: {
-              fillStyle: "rgba(255, 0, 0, 0.5)",
-            },
-          }
-        ),
-        Matter.Bodies.fromVertices(
-          ballPositionX,
-          273,
-          [
-            [
-              { x: 20, y: 0 },
-              { x: -20, y: 0 },
-              { x: 20, y: 300 },
-              { x: -20, y: 300 },
-            ],
-          ],
-          {
-            isStatic: true,
-            collisionFilter: { category: 0x0002, mask: 0x0002 },
-            render: {
-              fillStyle: "rgba(255, 0, 0, 0.5)",
-            },
-          }
-        ),
-      ],
-    });
-    arrowGuideRef.current = arrowGuide;
+    const arrowGuide = createArrowGuide(ballPositionX)
+    arrowGuideRef.current = arrowGuide
 
-    const pins = props.stageElement.pins.map((position) =>
-      Matter.Bodies.circle(position.x, position.y, 6, {
-        isStatic: true,
-        density: 1,
-        render: {
-          fillStyle: "white",
-        },
-      }),
-    )
+    const pins = createPins(props.stageElement.pins)
     pinsRef.current = pins
 
-    const obstacles = props.stageElement.obstacles.map((position) =>
-      Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
-        isStatic: true,
-        render: { fillStyle: "#ff0000" },
-      }),
-    )
+    const obstacles = createObstacles(props.stageElement.obstacles)
     obstaclesRef.current = obstacles
 
     engineRef.current = engine
@@ -205,7 +138,7 @@ export default function Stage(props: Props) {
       Matter.Body.setStatic(ballRef.current, false)
     }
     if (engineRef.current && arrowGuideRef.current) {
-      Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
     }
   }
 
@@ -229,11 +162,7 @@ export default function Stage(props: Props) {
       >
         →
       </Button>
-      <Button
-        onClick={props.handleNextStage}
-      >
-        Next Stage
-      </Button>
+      <Button onClick={props.handleNextStage}>Next Stage</Button>
     </div>
   )
 }
