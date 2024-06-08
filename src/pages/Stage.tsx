@@ -107,7 +107,6 @@ export default function Stage(props: Props) {
           // reset
           Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
           Matter.Body.setStatic(ballRef.current, true)
-          updateArrowGuide()
           if (arrowGuideRef.current) {
             Matter.World.add(engine.world, [arrowGuideRef.current])
           }
@@ -120,7 +119,6 @@ export default function Stage(props: Props) {
           // reset
           Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
           Matter.Body.setStatic(ballRef.current, true)
-          updateArrowGuide()
           if (arrowGuideRef.current) {
             Matter.World.add(engine.world, [arrowGuideRef.current])
           }
@@ -158,7 +156,7 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
 
-  }, [props.stageElement, updateArrowGuide])
+  }, [props.stageElement])
   const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
 
   useEffect(() => {
@@ -195,14 +193,6 @@ export default function Stage(props: Props) {
     }
     if (engineRef.current && arrowGuideRef.current) {
       Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
-    }
-  }
-
-  // 矢印とボールの位置を更新する関数
-  function updateArrowGuide() {
-    if (engineRef.current && ballRef.current && arrowGuideRef.current) {
-      Matter.Body.setPosition(ballRef.current, { x: ballPositionX, y: ballRef.current.position.y })
-      Matter.Body.setPosition(arrowGuideRef.current, { x: ballPositionX, y: arrowGuideRef.current.position.y })
     }
   }
 
