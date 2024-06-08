@@ -1,7 +1,9 @@
 import Matter from "matter-js";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Example() {
+	const canvasRef = useRef(null);
+
   useEffect(() => {
     // エンジンの作成
     const engine = Matter.Engine.create();
@@ -9,8 +11,11 @@ export default function Example() {
     engine.gravity.y = -3;
 
     // レンダラーの作成
+		if (!canvasRef.current) {
+			return;
+		}
     const render = Matter.Render.create({
-      element: document.body,
+      element: canvasRef.current,
       engine: engine,
       options: {
         width: 800,
@@ -82,7 +87,6 @@ export default function Example() {
   }, []);
 
   return (
-    <div>
-    </div>
+		<div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
   );
 }

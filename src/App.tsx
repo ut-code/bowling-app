@@ -23,8 +23,8 @@ function App() {
       spacing={2}
     >
       <Grid direction="row">
-        <button onClick={() => setUiState("Example")}>Example</button>
         <button onClick={() => setUiState("Start")}>Start</button>
+        <button onClick={() => setUiState("Example")}>Example</button>
         <button onClick={() => setUiState("Score")}>Score</button>
       </Grid>
       {uiState === "Score" && <Score scores={scores} />}
