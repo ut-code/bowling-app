@@ -1,13 +1,17 @@
 import { useState } from "react";
 import Example from "./pages/Example";
+import Score from "./pages/Score";
+
+export type TypeScore = {stage: number, score: number};
 
 function App() {
   const [uiState, setUiState] = useState("Start");
-  
+  const [scores, setScores] = useState<TypeScore[]>([]);
+
   return (
     <div>
       {uiState === "Start" && <p>start</p>}
-      {uiState === "Score" && <p>score</p>}
+      {uiState === "Score" && <Score scores={scores} />}
       {uiState === "Example" && <Example />}
       <button onClick={() => setUiState("Example")}>Example</button>
       <button onClick={() => setUiState("Start")}>Start</button>
