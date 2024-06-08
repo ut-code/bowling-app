@@ -1,6 +1,6 @@
-import { Button, TextField, styled } from "@mui/material";
+import { Button, TextField, styled } from "@mui/material"
 interface Props {
-  setUiState: ( uiState: string) => void
+  setUiState: (uiState: string) => void
 }
 
 function Start(props: Props) {
@@ -11,7 +11,7 @@ function Start(props: Props) {
     },
     color: "white",
     width: "100%",
-  });
+  })
   return (
     <>
       <h1>ボウリング.js</h1>
@@ -26,7 +26,7 @@ function Start(props: Props) {
         <RedButton onClick={() => props.setUiState("Example")}>プレイ</RedButton>
       </div>
     </>
-  );
+  )
 }
 
-export default Start;
+export default Start
