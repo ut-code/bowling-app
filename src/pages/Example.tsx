@@ -13,6 +13,7 @@ export default function Example() {
   const ballRef = useRef<Matter.Body | null>(null)
   const pinsRef = useRef<Matter.Body[] | null>(null)
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
+  const wallsRef = useRef<Matter.Body[] | null>(null)
 
   const [ballPositionX, setBallPositionX] = useState(400)
 
@@ -65,33 +66,34 @@ export default function Example() {
 
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
-        // ボールがピンにあたった場合は初期位置に戻さない
-        pinsRef.current?.forEach((pin) => {
-          if (pair.bodyA === pin || pair.bodyB === pin) {
-            // ピンの接触時の動きを設定
-            Matter.Events.on(engine, "collisionStart", (event) => {
-              event.pairs.forEach((pair) => {
-                const { bodyA, bodyB } = pair
-                if (bodyA === ball || bodyB === ball) {
-                  const pin = bodyA === ball ? bodyB : bodyA
-                  Matter.Body.setStatic(pin, false)
-                }
-                // ピン同士
-                if (pins.includes(bodyA) && pins.includes(bodyB)) {
-                  Matter.Body.setStatic(bodyA, false)
-                  Matter.Body.setStatic(bodyB, false)
-                }
-              })
-            })
-          }
-        })
+        const { bodyA, bodyB } = pair
 
-        // ボールが障害物にあたった場合は初期位置に戻す
-        obstaclesRef.current?.forEach((obstacle) => {
-          if (pair.bodyA === obstacle || pair.bodyB === obstacle) {
+        // ピンとの衝突
+        if (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) {
+          if (bodyA === ball || bodyB === ball) {
+            const pin = bodyA === ball ? bodyB : bodyA
+            Matter.Body.setStatic(pin, false)
+          }
+
+          // ピン同士の衝突
+          if (pinsRef.current?.includes(bodyA) && pinsRef.current?.includes(bodyB)) {
+            Matter.Body.setStatic(bodyA, false)
+            Matter.Body.setStatic(bodyB, false)
+          }
+        }
+
+        // 障害物との衝突
+        if (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) {
+          if (bodyA === ball || bodyB === ball) {
             Matter.Body.setPosition(ball, { x: 400, y: 500 })
           }
-        })
+        }
+        // 壁との衝突
+        if (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) {
+          if (bodyA === ball || bodyB === ball) {
+            Matter.Body.setPosition(ball, { x: 400, y: 500 })
+          }
+        }
       })
     })
 
@@ -101,6 +103,7 @@ export default function Example() {
       Matter.Bodies.rectangle(800, 300, WALL_WIDTH, 600, { isStatic: true }),
       Matter.Bodies.rectangle(0, 300, WALL_WIDTH, 600, { isStatic: true }),
     ]
+    wallsRef.current = walls
 
     const ball = Matter.Bodies.circle(ballPositionX, 500, 22, {
       isStatic: true,
