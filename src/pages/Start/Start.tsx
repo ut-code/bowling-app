@@ -1,5 +1,5 @@
 import { Button, TextField, styled, Grid } from "@mui/material"
-import logo from "../assets/bowling_logo.png"
+import logo from "../../assets/bowling_logo.png"
 
 interface Props {
   setUiState: (uiState: string) => void
