@@ -106,11 +106,18 @@ export default function Example() {
     );
 		pinsRef.current = pins;
 
-    const obstacle = Matter.Bodies.rectangle(400, 300, 200, 50, {
-      isStatic: true,
-      render: { fillStyle: "#ff0000" },
-    });
-		const obstacles = [obstacle];
+    function createRectangleObstacle(x: number, y: number) {
+      return Matter.Bodies.rectangle(x, y, 200, 50, {
+          isStatic: true,
+          render: { fillStyle: "#ff0000" },
+      });
+  }
+  
+
+const obstacles = [
+    createRectangleObstacle(500, 300),
+    createRectangleObstacle(200, 300)
+];
 		obstaclesRef.current = obstacles;
 
     engineRef.current = engine;
