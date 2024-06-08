@@ -220,6 +220,8 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
   }, [ballPositionX])
+  const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
+
   // ピンの移動を確認し、スコアを更新する関数
   useEffect(() => {
     const checkPinMovement = () => {
@@ -227,18 +229,20 @@ export default function Stage(props: Props) {
         pinsRef.current.forEach((pin, index) => {
           const originalPin = props.stageElement!.pins[index]
           const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
-          if (moved) {
-            // 直接新しいスコア値を渡す
-            props.setScore((prevScore: number) => prevScore + 1)
+          if (moved && !movedPins[index]) {
+            props.setScore((prevScore) => prevScore + 1)  // スコアを更新
+            // ピンの移動状態を更新する
+            setMovedPins((prevMovedPins) => ({ ...prevMovedPins, [index]: true }))
           }
         })
       }
     }
-
+  
     const interval = setInterval(checkPinMovement, 1000)
-
+  
     return () => clearInterval(interval)
-  }, [props.stageElement!.pins, props.setScore])
+  }, [props.stageElement!.pins, props.setScore, movedPins])
+  
 
   function handleThrowClick() {
     if (ballRef.current) {
