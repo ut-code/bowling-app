@@ -7,10 +7,11 @@ const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
 
 export default function Example() {
+  const engineRef = useRef<Matter.Engine | null>(null);
+  const renderRef = useRef<Matter.Render | null>(null);
+  const ballRef = useRef<Matter.Body | null>(null);
+  const arrowGuideRef = useRef<Matter.Body | null>(null);
   const canvasRef = useRef(null)
-  const engineRef = useRef<Matter.Engine | null>(null)
-  const renderRef = useRef<Matter.Render | null>(null)
-  const ballRef = useRef<Matter.Body | null>(null)
   const pinsRef = useRef<Matter.Body[] | null>(null)
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
@@ -107,6 +108,7 @@ export default function Example() {
 
     const ball = Matter.Bodies.circle(ballPositionX, 500, 22, {
       isStatic: true,
+      collisionFilter: { category: 0x0001, mask: 0x0001 },
       frictionAir: 0.02,
       restitution: 0.3,
       render: {
@@ -115,6 +117,53 @@ export default function Example() {
     })
     ballRef.current = ball
 
+    const arrowGuide = Matter.Body.create({
+      isStatic: true,
+      collisionFilter: { category: 0x0001, mask: 0x0002 },
+      parts: [
+        Matter.Bodies.fromVertices(
+          ballPositionX,
+          100,
+          [
+            [
+              { x: 400, y: 280 },
+              { x: 450, y: 350 },
+              { x: 350, y: 350 },
+            ],
+          ],
+          {
+            isStatic: true,
+            collisionFilter: { category: 0x0001, mask: 0x0002 },
+            render: {
+              fillStyle: "rgba(255, 0, 0, 0.5)",
+            },
+          }
+        ),
+        Matter.Bodies.fromVertices(
+          ballPositionX,
+          273,
+          [
+            [
+              { x: 20, y: 0 },
+              { x: -20, y: 0 },
+              { x: 20, y: 300 },
+              { x: -20, y: 300 },
+            ],
+          ],
+          {
+            isStatic: true,
+            collisionFilter: { category: 0x0002, mask: 0x0002 },
+            render: {
+              fillStyle: "rgba(255, 0, 0, 0.5)",
+            },
+          }
+        ),
+      ],
+    });
+    arrowGuideRef.current = arrowGuide;
+
+    // 世界にボディを追加
+    Matter.World.add(engine.world, [ball, ...walls, arrowGuide]);
     const pinPositions = [
       { x: 400, y: 260 },
       { x: 380, y: 240 },
@@ -169,8 +218,10 @@ export default function Example() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false)
     }
+    if (engineRef.current && arrowGuideRef.current) {
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
+    }
   }
-
   return (
     <div>
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
