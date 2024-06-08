@@ -85,33 +85,36 @@ export default function Stage(props: Props) {
           Matter.World.remove(engine.world, pin) // 衝突したピンを削除
         }
 
-        // ピンとの衝突
-        if (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) {
-          if (bodyA === ball || bodyB === ball) {
-            const pin = bodyA === ball ? bodyB : bodyA
-            Matter.Body.setStatic(pin, false)
-          }
-
-          // ピン同士の衝突
-          if (pinsRef.current?.includes(bodyA) && pinsRef.current?.includes(bodyB)) {
-            Matter.Body.setStatic(bodyA, false)
-            Matter.Body.setStatic(bodyB, false)
-          }
+        // ピンとボールの衝突
+        if (
+          (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB)) &&
+          (bodyA === ball || bodyB === ball)
+        ) {
+          const pin = bodyA === ball ? bodyB : bodyA
+          Matter.Body.setStatic(pin, false)
         }
 
-        // 障害物との衝突
-        if (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) {
-          if (bodyA === ball || bodyB === ball) {
-            Matter.Body.setPosition(ball, { x: 400, y: 500 })
-            Matter.Body.setStatic(ball, true)
-          }
+        // ピン同士の衝突
+        if (pinsRef.current?.includes(bodyA) && pinsRef.current?.includes(bodyB)) {
+          Matter.Body.setStatic(bodyA, false)
+          Matter.Body.setStatic(bodyB, false)
+        }
+        
+        // 障害物とボールの衝突
+        if (
+          (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
+          (bodyA === ball || bodyB === ball)
+        ) {
+          Matter.Body.setPosition(ball, { x: 400, y: 500 })
+          Matter.Body.setStatic(ball, true)
         }
         // 壁との衝突
-        if (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) {
-          if (bodyA === ball || bodyB === ball) {
-            Matter.Body.setPosition(ball, { x: 400, y: 500 })
-            Matter.Body.setStatic(ball, true)
-          }
+        if (
+          (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
+          (bodyA === ball || bodyB === ball)
+        ) {
+          Matter.Body.setPosition(ball, { x: 400, y: 500 })
+          Matter.Body.setStatic(ball, true)
         }
       })
     })
@@ -168,7 +171,7 @@ export default function Stage(props: Props) {
     const interval = setInterval(checkPinMovement, 1000)
   
     return () => clearInterval(interval)
-  }, [props.stageElement.pins, props.setScore, movedPins])
+  }, [movedPins, props, props.stageElement.pins])
 
   function handleThrowClick() {
     if (ballRef.current) {
