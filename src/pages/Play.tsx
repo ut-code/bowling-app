@@ -1,13 +1,17 @@
 import { useState } from "react"
-import { StageElements } from "../App"
-import Example from "./Example"
-// import { Example } from "../components/Example";
+import { StageElements, TypeScore } from "../App"
+import Stage from "./Stage"
 
-export default function Play() {
+interface Props {
+  setScores: (scores: TypeScore[]) => void
+}
+
+export default function Play(props: Props) {
   const [stageNumber, setStageNumber] = useState(0)
-  const [stageElements] = useState<StageElements[]>([
+  const stageElements: StageElements[] = [
     {
-      obstacles: [{ x: 400, y: 300 }],
+      stageNumber: 0,
+      obstacles: [{ x: 200, y: 300 }],
       pins: [
         { x: 400, y: 260 },
         { x: 380, y: 240 },
@@ -21,7 +25,9 @@ export default function Play() {
         { x: 460, y: 200 },
       ],
     },
-  ])
+  ]
 
-  return <Example />
+  const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
+
+  return <Stage stageElement={stageElement} stageNumber={stageNumber} setStageNumber={setStageNumber} setScores={props.setScores} />
 }
