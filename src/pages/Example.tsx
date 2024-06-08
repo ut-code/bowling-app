@@ -28,13 +28,19 @@ export default function Example() {
 
     const ball = Matter.Bodies.circle(400, 500, 20, {
       frictionAir: 0.02,
+      restitution: 0.3,
       render: {
         fillStyle: "blue",
       },
     });
+    // 固定された障害物を作成
+    const obstacle = Matter.Bodies.rectangle(400, 300, 200, 50, {
+      isStatic: true,
+      render: { fillStyle: "#ff0000" },
+    });
 
     // 世界にボディを追加
-    Matter.World.add(engine.world, [ball, ...walls]);
+    Matter.World.add(engine.world, [ball, ...walls, obstacle]);
 
     // エンジンとレンダラーの実行
     Matter.Engine.run(engine);
