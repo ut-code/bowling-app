@@ -9,12 +9,11 @@ const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
 
 interface Props {
-  stageElement: StageElements | undefined
+  stageElement: StageElements
   stageNumber: number
   handleNextStage: (stageNumber: number) => void
   setScores: (scores: TypeScore[]) => void
   score: number // スコアを受け取るプロップス
-  // setScore: (score: number) => void
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
 
@@ -81,16 +80,8 @@ export default function Stage(props: Props) {
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
           (pinsRef.current?.includes(bodyA) || pinsRef.current?.includes(bodyB))
         ) {
-          let pin: Matter.Body | null = null
-          if (pinsRef.current?.includes(bodyA)) {
-            pin = bodyA
-          }
-          if (pinsRef.current?.includes(bodyB)) {
-            pin = bodyB
-          }
-          if (pin) {
-            Matter.World.remove(engine.world, pin) // 衝突したピンを削除
-          }
+          const pin = pinsRef.current?.includes(bodyA) ? bodyA : bodyB
+          Matter.World.remove(engine.world, pin) // 衝突したピンを削除
         }
 
         // ピンとの衝突
@@ -186,7 +177,7 @@ export default function Stage(props: Props) {
     })
     arrowGuideRef.current = arrowGuide
 
-    const pins = props.stageElement!.pins.map((position) =>
+    const pins = props.stageElement.pins.map((position) =>
       Matter.Bodies.circle(position.x, position.y, 6, {
         isStatic: true,
         density: 1,
@@ -197,7 +188,7 @@ export default function Stage(props: Props) {
     )
     pinsRef.current = pins
 
-    const obstacles = props.stageElement!.obstacles.map((position) =>
+    const obstacles = props.stageElement.obstacles.map((position) =>
       Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
         isStatic: true,
         render: { fillStyle: "#ff0000" },
@@ -228,7 +219,7 @@ export default function Stage(props: Props) {
     const checkPinMovement = () => {
       if (pinsRef.current) {
         pinsRef.current.forEach((pin, index) => {
-          const originalPin = props.stageElement!.pins[index]
+          const originalPin = props.stageElement.pins[index]
           const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
           if (moved && !movedPins[index]) {
             props.setScore((prevScore) => prevScore + 1)  // スコアを更新
@@ -242,9 +233,7 @@ export default function Stage(props: Props) {
     const interval = setInterval(checkPinMovement, 1000)
   
     return () => clearInterval(interval)
-  }, [props.stageElement!.pins, props.setScore, movedPins])
-  
-
+  }, [props.stageElement.pins, props.setScore, movedPins])
 
   function handleThrowClick() {
     if (ballRef.current) {

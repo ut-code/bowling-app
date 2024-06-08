@@ -70,6 +70,9 @@ export default function Play(props: Props) {
 
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
+  if (!stageElement) {
+    return <div>ステージが見つかりません</div>
+  }
 
   return (
     <div>
