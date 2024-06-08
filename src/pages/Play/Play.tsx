@@ -59,7 +59,7 @@ const stageElements: StageElements[] = [
 
 interface Props {
   setUiState: (uiState: string) => void
-  setScores: (scores: GameScore[]) => void
+  setScores: React.Dispatch<React.SetStateAction<GameScore[]>>
 }
 
 export default function Play(props: Props) {

@@ -14,7 +14,7 @@ interface Props {
   stageElement: StageElements
   stageNumber: number
   handleNextStage: () => void
-  setScores: (scores: GameScore[]) => void
+  setScores: React.Dispatch<React.SetStateAction<GameScore[]>>
   score: number // スコアを受け取るプロップス
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
