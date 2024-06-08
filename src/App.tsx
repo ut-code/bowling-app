@@ -9,7 +9,7 @@ export type TypeScore = {
   score: number
 }
 
-function App() {
+export default function App() {
   const [uiState, setUiState] = useState("Start")
   const [scores, setScores] = useState<TypeScore[]>([])
 
@@ -26,5 +26,3 @@ function App() {
     </Grid>
   )
 }
-
-export default App
