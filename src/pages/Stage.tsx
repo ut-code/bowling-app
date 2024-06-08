@@ -10,7 +10,7 @@ const WALL_WIDTH = 50
 interface Props {
   stageElement: StageElements
   stageNumber: number
-  handleNextStage: (stageNumber: number) => void
+  handleNextStage: () => void
   setScores: (scores: TypeScore[]) => void
 }
 
