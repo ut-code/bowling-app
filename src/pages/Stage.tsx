@@ -1,12 +1,20 @@
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
+import { StageElements, TypeScore } from "../App"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 600
 const WALL_WIDTH = 50
 
-export default function Stage() {
+interface Props {
+  stageElement: StageElements
+  stageNumber: number
+  setStageNumber: (stageNumber: number) => void
+  setScores: (scores: TypeScore[]) => void
+}
+
+export default function Stage(props: Props) {
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
@@ -162,22 +170,7 @@ export default function Stage() {
     });
     arrowGuideRef.current = arrowGuide;
 
-    // 世界にボディを追加
-    Matter.World.add(engine.world, [ball, ...walls, arrowGuide]);
-    const pinPositions = [
-      { x: 400, y: 260 },
-      { x: 380, y: 240 },
-      { x: 420, y: 240 },
-      { x: 360, y: 220 },
-      { x: 400, y: 220 },
-      { x: 440, y: 220 },
-      { x: 340, y: 200 },
-      { x: 380, y: 200 },
-      { x: 420, y: 200 },
-      { x: 460, y: 200 },
-    ]
-
-    const pins = pinPositions.map((position) =>
+    const pins = props.stageElement.pins.map((position) =>
       Matter.Bodies.circle(position.x, position.y, 6, {
         isStatic: true,
         density: 1,
@@ -188,20 +181,18 @@ export default function Stage() {
     )
     pinsRef.current = pins
 
-    function createRectangleObstacle(x: number, y: number) {
-      return Matter.Bodies.rectangle(x, y, 200, 50, {
+    const obstacles = props.stageElement.obstacles.map((position) =>
+      Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
         isStatic: true,
         render: { fillStyle: "#ff0000" },
-      })
-    }
-
-    const obstacles = [createRectangleObstacle(500, 300), createRectangleObstacle(200, 300)]
+      }),
+    )
     obstaclesRef.current = obstacles
 
     engineRef.current = engine
     renderRef.current = render
 
-    Matter.World.add(engine.world, [ball, ...walls, ...pins, ...obstacles])
+    Matter.World.add(engine.world, [ball, ...walls, ...pins, ...obstacles, arrowGuide])
 
     Matter.Engine.run(engine)
     Matter.Render.run(render)

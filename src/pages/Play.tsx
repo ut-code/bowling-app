@@ -11,7 +11,7 @@ export default function Play(props: Props) {
   const stageElements: StageElements[] = [
     {
       stageNumber: 0,
-      obstacles: [{ x: 400, y: 300 }],
+      obstacles: [{ x: 200, y: 300 }],
       pins: [
         { x: 400, y: 260 },
         { x: 380, y: 240 },
