@@ -28,15 +28,6 @@ export default function Stage(props: Props) {
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
 
-  const moveBallPositionX = (dx: number) => {
-    if (!ballRef.current) return
-    if (!arrowGuideRef.current) return
-    const newPositionX = ballRef.current.position.x + dx
-    if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
-    Matter.Body.setPosition(ballRef.current, { x: newPositionX, y: ballRef.current.position.y })
-    Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
-  }
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -47,7 +38,7 @@ export default function Stage(props: Props) {
           moveBallPositionX(-10)
           break
         case " ":
-          handleThrowClick()
+          throwBall()
           break
       }
     }
@@ -189,7 +180,16 @@ export default function Stage(props: Props) {
     return () => clearInterval(interval)
   }, [movedPins, props, props.stageElement.pins])
 
-  function handleThrowClick() {
+  function moveBallPositionX (dx: number) {
+    if (!ballRef.current) return
+    if (!arrowGuideRef.current) return
+    const newPositionX = ballRef.current.position.x + dx
+    if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
+    Matter.Body.setPosition(ballRef.current, { x: newPositionX, y: ballRef.current.position.y })
+    Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
+  }
+
+  function throwBall() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false)
     }
@@ -208,7 +208,7 @@ export default function Stage(props: Props) {
       >
         ←
       </Button>
-      <Button onClick={handleThrowClick} variant="contained">
+      <Button onClick={throwBall} variant="contained">
         Throw!
       </Button>
       <Button
