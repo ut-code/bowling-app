@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material"
+
 import { TypeScore } from "../App"
 
 interface Props {
