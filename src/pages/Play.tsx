@@ -28,6 +28,9 @@ export default function Play(props: Props) {
   ]
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
+  if (!stageElement) {
+    return <div>Stage Not Found</div>
+  }
 
   return <Stage stageElement={stageElement} stageNumber={stageNumber} setStageNumber={setStageNumber} setScores={props.setScores} />
 }
