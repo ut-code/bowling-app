@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from "@mui/material";
 import { TypeScore } from "../App";
 
 interface Props {
@@ -16,7 +16,7 @@ export default function Score(props: Props) {
 
   return (
     <div>
-      <h1>Score</h1>
+      <h1>スコア</h1>
       <h1>{currentScore}点</h1>
       <TableContainer component={Paper}>
         <Table>

@@ -5,13 +5,12 @@ interface Props {
 
 function Start(props: Props) {
   const RedButton = styled(Button)({
-    backgroundColor: "red",
+    backgroundColor: "#D25E5E",
     "&:hover": {
       backgroundColor: "darkred",
     },
     color: "white",
     width: "100%",
-    // height: 77,
   });
   return (
     <>
