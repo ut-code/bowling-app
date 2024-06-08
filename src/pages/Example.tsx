@@ -1,11 +1,44 @@
 import { Button } from "@mui/material";
 import Matter from "matter-js";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const RENDERER_WIDTH = 800;
+const RENDERER_HEIGHT = 600;
+const WALL_WIDTH = 50;
 
 export default function Example() {
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
+
+  const [ballPositionX, setBallPositionX] = useState(400);
+
+  const updateBallPositionX = (newPositionX: number) => {
+    if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return;
+    setBallPositionX(newPositionX);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowRight") {
+        updateBallPositionX(ballPositionX + 10);
+      }
+      if (event.key === "ArrowLeft") {
+        updateBallPositionX(ballPositionX - 10);
+      }
+      if (event.key === " ") {
+        handleThrowClick();
+      }
+    };
+
+    // コンポーネントがマウントされたら、イベントリスナーを追加
+    window.addEventListener("keydown", handleKeyDown);
+
+    // クリーンアップ関数
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [ballPositionX]);
 
   useEffect(() => {
     // エンジンの作成
@@ -18,20 +51,20 @@ export default function Example() {
       element: document.body,
       engine: engine,
       options: {
-        width: 800,
-        height: 600,
+        width: RENDERER_WIDTH,
+        height: RENDERER_HEIGHT,
         wireframes: false,
       },
     });
 
     const walls = [
-      Matter.Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
-      Matter.Bodies.rectangle(400, 600, 800, 50, { isStatic: true }),
-      Matter.Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
-      Matter.Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
+      Matter.Bodies.rectangle(400, 0, 800, WALL_WIDTH, { isStatic: true }),
+      Matter.Bodies.rectangle(400, 600, 800, WALL_WIDTH, { isStatic: true }),
+      Matter.Bodies.rectangle(800, 300, WALL_WIDTH, 600, { isStatic: true }),
+      Matter.Bodies.rectangle(0, 300, WALL_WIDTH, 600, { isStatic: true }),
     ];
 
-    const ball = Matter.Bodies.circle(400, 500, 20, {
+    const ball = Matter.Bodies.circle(ballPositionX, 500, 20, {
       isStatic: true,
       frictionAir: 0.02,
       render: {
@@ -56,9 +89,9 @@ export default function Example() {
       Matter.Engine.clear(engine);
       render.canvas.remove();
     };
-  }, []);
+  }, [ballPositionX]);
 
-  function handleClick() {
+  function handleThrowClick() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false);
     }
@@ -67,8 +100,22 @@ export default function Example() {
   return (
     <div>
       <h1>Matter.js with React</h1>
-      <Button onClick={handleClick} variant="contained">
+      <Button
+        onClick={() => {
+          updateBallPositionX(ballPositionX - 10);
+        }}
+      >
+        ←
+      </Button>
+      <Button onClick={handleThrowClick} variant="contained">
         Throw!
+      </Button>
+      <Button
+        onClick={() => {
+          updateBallPositionX(ballPositionX + 10);
+        }}
+      >
+        →
       </Button>
     </div>
   );
