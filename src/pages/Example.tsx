@@ -10,6 +10,7 @@ export default function Example() {
   const engineRef = useRef<Matter.Engine | null>(null);
   const renderRef = useRef<Matter.Render | null>(null);
   const ballRef = useRef<Matter.Body | null>(null);
+  const arrowGuideRef = useRef<Matter.Body | null>(null);
 
   const [ballPositionX, setBallPositionX] = useState(400);
 
@@ -66,6 +67,7 @@ export default function Example() {
 
     const ball = Matter.Bodies.circle(ballPositionX, 500, 20, {
       isStatic: true,
+      collisionFilter: { category: 0x0001, mask: 0x0001 },
       frictionAir: 0.02,
       render: {
         fillStyle: "blue",
@@ -73,8 +75,53 @@ export default function Example() {
     });
     ballRef.current = ball;
 
+    const arrowGuide = Matter.Body.create({
+      isStatic: true,
+      collisionFilter: { category: 0x0001, mask: 0x0002 },
+      parts: [
+        Matter.Bodies.fromVertices(
+          ballPositionX,
+          100,
+          [
+            [
+              { x: 400, y: 280 },
+              { x: 450, y: 350 },
+              { x: 350, y: 350 },
+            ],
+          ],
+          {
+            isStatic: true,
+            collisionFilter: { category: 0x0001, mask: 0x0002 },
+            render: {
+              fillStyle: "rgba(255, 0, 0, 0.5)",
+            },
+          }
+        ),
+        Matter.Bodies.fromVertices(
+          ballPositionX,
+          273,
+          [
+            [
+              { x: 20, y: 0 },
+              { x: -20, y: 0 },
+              { x: 20, y: 300 },
+              { x: -20, y: 300 },
+            ],
+          ],
+          {
+            isStatic: true,
+            collisionFilter: { category: 0x0002, mask: 0x0002 },
+            render: {
+              fillStyle: "rgba(255, 0, 0, 0.5)",
+            },
+          }
+        ),
+      ],
+    });
+    arrowGuideRef.current = arrowGuide;
+
     // 世界にボディを追加
-    Matter.World.add(engine.world, [ball, ...walls]);
+    Matter.World.add(engine.world, [ball, ...walls, arrowGuide]);
 
     // エンジンとレンダラーの実行
     Matter.Engine.run(engine);
@@ -95,28 +142,31 @@ export default function Example() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false);
     }
-  }
+    if (engineRef.current && arrowGuideRef.current) {
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
+    }
 
-  return (
-    <div>
-      <h1>Matter.js with React</h1>
-      <Button
-        onClick={() => {
-          updateBallPositionX(ballPositionX - 10);
-        }}
-      >
-        ←
-      </Button>
-      <Button onClick={handleThrowClick} variant="contained">
-        Throw!
-      </Button>
-      <Button
-        onClick={() => {
-          updateBallPositionX(ballPositionX + 10);
-        }}
-      >
-        →
-      </Button>
-    </div>
-  );
+    return (
+      <div>
+        <h1>Matter.js with React</h1>
+        <Button
+          onClick={() => {
+            updateBallPositionX(ballPositionX - 10);
+          }}
+        >
+          ←
+        </Button>
+        <Button onClick={handleThrowClick} variant="contained">
+          Throw!
+        </Button>
+        <Button
+          onClick={() => {
+            updateBallPositionX(ballPositionX + 10);
+          }}
+        >
+          →
+        </Button>
+      </div>
+    );
+  }
 }
