@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
-import { StageElements, TypeScore } from "../../../App"
+import { StageElements, GameScore } from "../../../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
 import StageHeader from "./StageHeader"
 
@@ -14,7 +14,7 @@ interface Props {
   stageElement: StageElements
   stageNumber: number
   handleNextStage: () => void
-  setScores: (scores: TypeScore[]) => void
+  setScores: (scores: GameScore[]) => void
   score: number // スコアを受け取るプロップス
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }

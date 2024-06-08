@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { StageElements, TypeScore } from "../../App"
+import { StageElements, GameScore } from "../../App"
+import { Grid } from "@mui/material"
 import Stage from "./Stage/Stage"
 
 const stageElements: StageElements[] = [
@@ -58,14 +59,12 @@ const stageElements: StageElements[] = [
 
 interface Props {
   setUiState: (uiState: string) => void
-  setScores: (scores: TypeScore[]) => void
+  setScores: (scores: GameScore[]) => void
 }
 
 export default function Play(props: Props) {
   const [stageNumber, setStageNumber] = useState(0)
-
   const [score, setScore] = useState(0) // スコアの状態を管理
-
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
   if (!stageElement) {
@@ -80,7 +79,7 @@ export default function Play(props: Props) {
     setStageNumber((number) => number + 1)
   }
   return (
-    <div>
+    <Grid>
       <Stage
         stageElement={stageElement}
         stageNumber={stageNumber}
@@ -89,6 +88,6 @@ export default function Play(props: Props) {
         score={score} // スコアをStageコンポーネントに渡す
         setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
       />
-    </div>
+    </Grid>
   )
 }

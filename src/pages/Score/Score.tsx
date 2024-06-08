@@ -1,10 +1,10 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material"
 
-import { TypeScore } from "../../App"
+import { GameScore } from "../../App"
 
 interface Props {
   setUiState: (uiState: string) => void
-  scores: TypeScore[]
+  scores: GameScore[]
 }
 
 const currentScore = 100
@@ -33,8 +33,8 @@ export default function Score(props: Props) {
           </TableHead>
           <TableBody>
             {scores.map((score) => (
-              <TableRow key={score.stage}>
-                <TableCell>{score.stage}</TableCell>
+              <TableRow key={score.stageNumber}>
+                <TableCell>{score.stageNumber}</TableCell>
                 <TableCell>{score.score}</TableCell>
               </TableRow>
             ))}
