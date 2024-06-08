@@ -145,6 +145,7 @@ const obstacles = [
 
   return (
     <div>
+      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
       <Button
         onClick={() => {
           updateBallPositionX(ballPositionX - 10);
@@ -162,7 +163,6 @@ const obstacles = [
       >
         →
       </Button>
-			<div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
     </div>
   );
 }
