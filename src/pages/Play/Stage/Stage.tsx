@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 import { StageElements, GameScore } from "../../../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
 import StageHeader from "./StageHeader"
+import bowlingField from "../../../assets/bowling_field.jpg"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 550
@@ -64,6 +65,7 @@ export default function Stage(props: Props) {
         width: RENDERER_WIDTH,
         height: RENDERER_HEIGHT,
         wireframes: false,
+        background: `url(${bowlingField})`,
       },
     })
 
