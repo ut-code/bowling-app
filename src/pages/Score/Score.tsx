@@ -9,7 +9,6 @@ interface Props {
 
 const currentScore = 100
 
-// ScoreSheetにリネームしたほうがいいかも
 export default function Score(props: Props) {
   const gameScores: GameScore[] =
     props.gameScores.length > 0

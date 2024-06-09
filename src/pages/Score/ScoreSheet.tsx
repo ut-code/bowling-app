@@ -15,9 +15,10 @@ export default function ScoreSheet(props: Props) {
       <Table>
         <TableHead>
           <TableRow>
+
             {calculatedGameScores.map((_, index) => (
-              <TableCell key={index} align="center" colSpan={2}>
-                {index + 1}
+              <TableCell key={index} align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)", backgroundColor: "rgb(30, 30, 30)", color: "white" }}>
+                <b>{index + 1}</b>
               </TableCell>
             ))}
             <TableCell align="center" colSpan={2}>
@@ -29,10 +30,10 @@ export default function ScoreSheet(props: Props) {
           <TableRow>
             {calculatedGameScores.map((score) => (
               <Fragment key={score.stageNumber}>
-                <TableCell align="center">
+                <TableCell align="center" sx={{ border: "2px solid rgb(30, 30, 30)" }}>
                   {score.firstThrow === null ? "" : score.firstThrow === 10 ? "X" : score.firstThrow ?? "-"}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={{ border: "2px solid rgb(30, 30, 30)" }}>
                   {score.firstThrow === null || score.secondThrow === null
                     ? ""
                     : score.firstThrow + score.secondThrow === 10
@@ -46,10 +47,13 @@ export default function ScoreSheet(props: Props) {
             </TableCell>
           </TableRow>
           <TableRow>
+
             {calculatedGameScores.map((score) => (
-              <TableCell key={score.stageNumber} align="center" colSpan={2}>
-                {score.sumScore ?? "-"}
-              </TableCell>
+							<Fragment key={score.stageNumber}>
+								<TableCell align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)" }}>
+									{score.totalScore ?? "-"}
+								</TableCell>
+							</Fragment>
             ))}
             <TableCell align="center" colSpan={2}>
               {totalScore}
