@@ -1,13 +1,12 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
-import { Fragment } from "react"
+import { Fragment, useContext } from "react"
 import { GameScore } from "../../App"
+import { GameScoreContext } from "../../App"
 
-interface Props {
-  gameScores: GameScore[]
-}
-
-export default function ScoreSheet(props: Props) {
-  const calculatedGameScores = calculate(props.gameScores)
+export default function ScoreSheet() {
+  const { gameScores } = useContext(GameScoreContext)
+  
+  const calculatedGameScores = calculate(gameScores)
   const totalScore = calculatedGameScores[calculatedGameScores.length - 1]?.sumScore ?? 0
 
   return (
