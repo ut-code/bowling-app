@@ -152,24 +152,20 @@ export default function Stage(props: Props) {
     const pinsCount = pinsRef.current?.filter((pin) => !pin.isStatic).length ?? 0
     // スコアを更新する
     props.setScore(pinsCount)
-		// 1投目: push
-		if (gameScores.length === 0 || gameScores[gameScores.length - 1].stageNumber !== props.stageNumber) {
-			const newGameScores = [...gameScores, { stageNumber: props.stageNumber, firstThrow: pinsCount, secondThrow: null, sumScore: null, totalScore: null }]
-			setGameScores(newGameScores)
-			console.log("1st throw")
-			return
-		}
-		// 2投目: update
-		const newGameScores = gameScores.map((gameScore) => {
-			if (gameScore.stageNumber === props.stageNumber) {
-				return { ...gameScore, secondThrow: pinsCount }
+
+		setGameScores((prevGameScores) => {
+			if (prevGameScores.length === 0 || prevGameScores[prevGameScores.length - 1].stageNumber !== props.stageNumber) {
+				console.log("1st throw")
+				return [...prevGameScores, { stageNumber: props.stageNumber, firstThrow: pinsCount, secondThrow: null, sumScore: null, totalScore: null }]
 			}
-			return gameScore
+			console.log("2nd throw")
+			return prevGameScores.map((gameScore) => {
+				if (gameScore.stageNumber === props.stageNumber) {
+					return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow }
+				}
+				return gameScore
+			})
 		})
-		console.log("2nd throw")
-		console.log(newGameScores)
-		setGameScores(newGameScores)
-		props.handleNextStage()
   }
 
   function moveBallPositionX(dx: number) {
