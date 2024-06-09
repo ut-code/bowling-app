@@ -55,6 +55,82 @@ const stageElements: StageElements[] = [
       { x: 460, y: 50 },
     ],
   },
+    {
+    stageNumber: 4,
+    obstacles: [
+      { x: 200, y: 100 },
+      { x: 700, y: 100 },
+    ],
+    pins: [
+      { x: 400, y: 10 },
+      { x: 380, y: 90 },
+      { x: 420, y: 90 },
+      { x: 360, y: 70 },
+      { x: 400, y: 70 },
+      { x: 440, y: 70 },
+      { x: 340, y: 50 },
+      { x: 380, y: 50 },
+      { x: 420, y: 50 },
+      { x: 460, y: 50 },
+    ],
+  },
+  {
+    stageNumber: 5,
+    obstacles: [
+      { x: 300, y: 100 },
+      { x: 700, y: 100 },
+    ],
+    pins: [
+      { x: 400, y: 10 },
+      { x: 380, y: 90 },
+      { x: 420, y: 90 },
+      { x: 360, y: 70 },
+      { x: 400, y: 70 },
+      { x: 440, y: 70 },
+      { x: 340, y: 50 },
+      { x: 380, y: 50 },
+      { x: 420, y: 50 },
+      { x: 460, y: 50 },
+    ],
+  },
+  {
+    stageNumber: 6,
+    obstacles: [
+      { x: 400, y: 100 },
+      { x: 700, y: 100 },
+    ],
+    pins: [
+      { x: 400, y: 10 },
+      { x: 380, y: 90 },
+      { x: 420, y: 90 },
+      { x: 360, y: 70 },
+      { x: 400, y: 70 },
+      { x: 440, y: 70 },
+      { x: 340, y: 50 },
+      { x: 380, y: 50 },
+      { x: 420, y: 50 },
+      { x: 460, y: 50 },
+    ],
+  },
+  {
+    stageNumber: 7,
+    obstacles: [
+      { x: 400, y: 100 },
+      { x: 700, y: 100 },
+    ],
+    pins: [
+      { x: 400, y: 10 },
+      { x: 380, y: 90 },
+      { x: 420, y: 90 },
+      { x: 360, y: 70 },
+      { x: 400, y: 70 },
+      { x: 440, y: 70 },
+      { x: 340, y: 50 },
+      { x: 380, y: 50 },
+      { x: 420, y: 50 },
+      { x: 460, y: 50 },
+    ],
+  },
 ]
 
 interface Props {
@@ -73,7 +149,7 @@ export default function Play(props: Props) {
   }
 
   const handleNextStage = () => {
-    if (stageNumber === stageElements.length - 1) {
+    if (stageNumber === stageElements.length) {
       props.setUiState("Score")
       return
     }
