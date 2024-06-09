@@ -144,6 +144,7 @@ export default function Stage(props: Props) {
           engineRef.current.gravity.x = INITIAL_GRAVITY.x
           engineRef.current.gravity.y = INITIAL_GRAVITY.y
         }
+        currentAngleRef.current = 180
       })
     })
 
@@ -162,7 +163,7 @@ export default function Stage(props: Props) {
     const obstacles = createObstacles(props.stageElement.obstacles)
     obstaclesRef.current = obstacles
 
-    currentAngleRef.current = 0
+    currentAngleRef.current = 180
 
     engineRef.current = engine
     renderRef.current = render
