@@ -215,7 +215,7 @@ export default function Stage(props: Props) {
     const newPositionX = ballRef.current.position.x + dx
     if (newPositionX < 0 + WALL_WIDTH || newPositionX > RENDERER_WIDTH - WALL_WIDTH) return
     Matter.Body.setPosition(ballRef.current, { x: newPositionX, y: ballRef.current.position.y })
-    Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
+    Matter.Body.setPosition(arrowGuideRef.current, { x: arrowGuideRef.current.position.x + dx, y: arrowGuideRef.current.position.y })
   }
 
   /**
