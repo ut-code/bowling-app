@@ -229,8 +229,8 @@ export default function Stage(props: Props) {
     const radian = currentAngleRef.current * (Math.PI / 180)
 
     console.log("radians", Math.sin(radian), Math.cos(radian))
-    engineRef.current.gravity.x = Math.sin(radian)
-    engineRef.current.gravity.y = Math.cos(radian)
+    engineRef.current.gravity.x = 3 * Math.sin(radian)
+    engineRef.current.gravity.y = 3 * Math.cos(radian)
   }
 
   function throwBall() {
