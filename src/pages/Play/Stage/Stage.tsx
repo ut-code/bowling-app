@@ -1,10 +1,11 @@
 import { Button } from "@mui/material"
 import Matter from "matter-js"
-import { useEffect, useRef } from "react"
-import { StageElements, GameScore } from "../../../App"
+import { useEffect, useRef, useContext } from "react"
+import { StageElements } from "../../../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
 import StageHeader from "./StageHeader"
 import bowlingField from "../../../assets/bowling_field.jpg"
+import { GameScoreContext } from "../../../App"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 550
@@ -16,13 +17,13 @@ interface Props {
   totalStageCount: number
   stageNumber: number
   handleNextStage: () => void
-  gameScores: GameScore[]
-  setGameScores: React.Dispatch<React.SetStateAction<GameScore[]>>
   score: number // スコアを受け取るプロップス
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
 
-export default function Stage(props: Props) {
+export default function Stage(props: Props) {	
+	const { gameScores, setGameScores } = useContext(GameScoreContext)
+
   const engineRef = useRef<Matter.Engine | null>(null)
   const renderRef = useRef<Matter.Render | null>(null)
   const ballRef = useRef<Matter.Body | null>(null)
@@ -31,27 +32,6 @@ export default function Stage(props: Props) {
   const pinsRef = useRef<Matter.Body[] | null>(null)
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "ArrowRight":
-          moveBallPositionX(10)
-          break
-        case "ArrowLeft":
-          moveBallPositionX(-10)
-          break
-        case " ":
-          throwBall()
-          break
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [])
 
   useEffect(() => {
     if (!canvasRef.current) return
@@ -169,9 +149,23 @@ export default function Stage(props: Props) {
     await new Promise((resolve) => setTimeout(resolve, 200))
 
     // ピンの数をカウントする
-    const pinsCount = pinsRef.current?.filter((pin) => !pin.isStatic).length || 0
+    const pinsCount = pinsRef.current?.filter((pin) => !pin.isStatic).length ?? 0
     // スコアを更新する
     props.setScore(pinsCount)
+
+		setGameScores((prevGameScores) => {
+			if (prevGameScores.length === 0 || prevGameScores[prevGameScores.length - 1].stageNumber !== props.stageNumber) {
+				console.log("1st throw")
+				return [...prevGameScores, { stageNumber: props.stageNumber, firstThrow: pinsCount, secondThrow: null, sumScore: null, totalScore: null }]
+			}
+			console.log("2nd throw")
+			return prevGameScores.map((gameScore) => {
+				if (gameScore.stageNumber === props.stageNumber) {
+					return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow }
+				}
+				return gameScore
+			})
+		})
   }
 
   function moveBallPositionX(dx: number) {
@@ -196,7 +190,6 @@ export default function Stage(props: Props) {
     <>
       <StageHeader
         totalStageCount={props.totalStageCount}
-        gameScores={props.gameScores}
         score={props.score}
         stageNumber={props.stageNumber}
       />
@@ -220,6 +213,7 @@ export default function Stage(props: Props) {
       </Button>
       {/* FIXME: これを消す */}
       <Button onClick={props.handleNextStage}>Next Stage</Button>
+			<Button onClick={() => console.log(gameScores)}>gameScores</Button>
     </>
   )
 }
