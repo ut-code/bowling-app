@@ -50,10 +50,9 @@ export function createArrowGuide(ballPositionX: number) {
 
 export function createWalls(wallWidth: number) {
   return [
-    Matter.Bodies.rectangle(400, 0, 800, wallWidth, { isStatic: true }),
-    Matter.Bodies.rectangle(400, 600, 800, wallWidth, { isStatic: true }),
-    Matter.Bodies.rectangle(800, 300, wallWidth, 600, { isStatic: true }),
-    Matter.Bodies.rectangle(0, 300, wallWidth, 600, { isStatic: true }),
+    Matter.Bodies.rectangle(800, 300, wallWidth, 600, { isStatic: true, render: { fillStyle: "#6B593E" } }),
+    Matter.Bodies.rectangle(0, 300, wallWidth, 600, { isStatic: true, render: { fillStyle: "#6B593E" } }), // 左
+    Matter.Bodies.rectangle(400, 0, 800, wallWidth, { isStatic: true, render: { fillStyle: "white" } }),
   ]
 }
 
