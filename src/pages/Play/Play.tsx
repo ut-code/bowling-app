@@ -6,7 +6,7 @@ import Stage from "./Stage/Stage"
 const stageElements: StageElements[] = [
   {
     stageNumber: 1,
-    obstacles: [{ x: 200, y: 300 }],
+    obstacles: [{ x: 350, y: 300 }],
     pins: [
       { x: 400, y: 110 },
       { x: 380, y: 90 },
@@ -22,7 +22,10 @@ const stageElements: StageElements[] = [
   },
   {
     stageNumber: 2,
-    obstacles: [{ x: 400, y: 300 }],
+    obstacles: [
+      { x: 350, y: 300 },
+      { x: 450, y: 300 },
+    ],
     pins: [
       { x: 400, y: 110 },
       { x: 380, y: 90 },
@@ -39,8 +42,9 @@ const stageElements: StageElements[] = [
   {
     stageNumber: 3,
     obstacles: [
-      { x: 100, y: 100 },
-      { x: 700, y: 100 },
+      { x: 350, y: 400 },
+      { x: 500, y: 250 },
+      { x: 370, y: 200 },
     ],
     pins: [
       { x: 400, y: 10 },
@@ -55,11 +59,13 @@ const stageElements: StageElements[] = [
       { x: 460, y: 50 },
     ],
   },
-    {
+  {
     stageNumber: 4,
     obstacles: [
-      { x: 200, y: 100 },
-      { x: 700, y: 100 },
+      { x: 250, y: 125 },
+      { x: 500, y: 150 },
+      { x: 450, y: 250 },
+      { x: 350, y: 200 },
     ],
     pins: [
       { x: 400, y: 10 },
@@ -77,46 +83,13 @@ const stageElements: StageElements[] = [
   {
     stageNumber: 5,
     obstacles: [
-      { x: 300, y: 100 },
-      { x: 700, y: 100 },
-    ],
-    pins: [
-      { x: 400, y: 10 },
-      { x: 380, y: 90 },
-      { x: 420, y: 90 },
-      { x: 360, y: 70 },
-      { x: 400, y: 70 },
-      { x: 440, y: 70 },
-      { x: 340, y: 50 },
-      { x: 380, y: 50 },
-      { x: 420, y: 50 },
-      { x: 460, y: 50 },
-    ],
-  },
-  {
-    stageNumber: 6,
-    obstacles: [
-      { x: 400, y: 100 },
-      { x: 700, y: 100 },
-    ],
-    pins: [
-      { x: 400, y: 10 },
-      { x: 380, y: 90 },
-      { x: 420, y: 90 },
-      { x: 360, y: 70 },
-      { x: 400, y: 70 },
-      { x: 440, y: 70 },
-      { x: 340, y: 50 },
-      { x: 380, y: 50 },
-      { x: 420, y: 50 },
-      { x: 460, y: 50 },
-    ],
-  },
-  {
-    stageNumber: 7,
-    obstacles: [
-      { x: 400, y: 100 },
-      { x: 700, y: 100 },
+      { x: 250, y: 400 },
+      { x: 300, y: 400 },
+      { x: 350, y: 400 },
+      { x: 400, y: 400 },
+      { x: 450, y: 400 },
+      { x: 500, y: 400 },
+      { x: 550, y: 400 },
     ],
     pins: [
       { x: 400, y: 10 },

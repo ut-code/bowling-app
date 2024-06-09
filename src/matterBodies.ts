@@ -87,13 +87,13 @@ export function createPins(pins: Pin[]) {
 
 export function createObstacles(obstacles: Obstacle[]) {
   return obstacles.map((position) =>
-    Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
+    Matter.Bodies.rectangle(position.x, position.y, 50, 50, {
       isStatic: true,
       render: {
         fillStyle: "blue",
         sprite: {
           texture: blockImg,
-          xScale: 0.035,
+          xScale: 0.01,
           yScale: 0.01,
         },
       },
