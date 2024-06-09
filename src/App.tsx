@@ -9,7 +9,6 @@ export type GameScore = {
   firstThrow: number | null
   secondThrow: number | null
   sumScore: number | null
-  totalScore: number | null
 }
 
 export type Pin = {
