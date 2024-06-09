@@ -1,5 +1,5 @@
-import { Button, IconButton } from "@mui/material"
-import { RotateLeft, RotateRight } from "@mui/icons-material"
+import { IconButton } from "@mui/material"
+import { RotateLeft, RotateRight, ArrowRight, ArrowLeft } from "@mui/icons-material"
 import Matter from "matter-js"
 import { useEffect, useRef, useContext } from "react"
 import { StageElements } from "../../../App"
@@ -246,24 +246,26 @@ export default function Stage(props: Props) {
     <>
       <StageHeader totalStageCount={props.totalStageCount} score={props.score} stageNumber={props.stageNumber} />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
-      <div style={{ marginTop: "8px" }}>
-				<Button
+			<div style={{ marginTop: "8px", display: "flex", justifyContent: "center" }}>
+				<IconButton
 					onClick={() => {
 						moveBallPositionX(-10)
 					}}
 				>
-					←
-				</Button>
+					<ArrowLeft />
+				</IconButton>
 				<RedButton onClick={throwBall} variant="contained">
 					Throw!
 				</RedButton>
-				<Button
+				<IconButton
 					onClick={() => {
 						moveBallPositionX(10)
 					}}
 				>
-					→
-				</Button>
+					<ArrowRight />
+				</IconButton>
+			</div>
+			<div style={{ marginTop: "8px", display: "flex", justifyContent: "center" }}>
 				<IconButton
 					onClick={() => {
 						changeGravityAngle(10)
