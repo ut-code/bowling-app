@@ -1,6 +1,7 @@
 import Matter from "matter-js"
 import { Obstacle, Pin } from "./App"
 import ballImg from "./assets/bowling_ball.png"
+import blockImg from "./assets/block.jpg"
 
 export function createArrowGuide(ballPositionX: number) {
   return Matter.Body.create({
@@ -63,7 +64,6 @@ export function createBall(ballPositionX: number) {
     frictionAir: 0.02,
     restitution: 0.3,
     render: {
-      fillStyle: "blue",
       sprite: {
         texture: ballImg,
         xScale: 0.3,
@@ -89,7 +89,14 @@ export function createObstacles(obstacles: Obstacle[]) {
   return obstacles.map((position) =>
     Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
       isStatic: true,
-      render: { fillStyle: "#ff0000" },
+      render: {
+        fillStyle: "blue",
+        sprite: {
+          texture: blockImg,
+          xScale: 0.035,
+          yScale: 0.01,
+        },
+      },
     }),
   )
 }
