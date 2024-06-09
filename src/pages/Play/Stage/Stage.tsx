@@ -1,6 +1,6 @@
 import { Button } from "@mui/material"
 import Matter from "matter-js"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { StageElements, GameScore } from "../../../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
 import StageHeader from "./StageHeader"
@@ -111,11 +111,12 @@ export default function Stage(props: Props) {
             })
           }
         }
-        // 壁との衝突
+        // 壁とボールの衝突
         if (
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
           (bodyA === ballRef.current || bodyB === ballRef.current)
         ) {
+          countPins()
           // reset
           Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
           Matter.Body.setStatic(ballRef.current, true)
@@ -160,28 +161,16 @@ export default function Stage(props: Props) {
       render.canvas.remove()
     }
   }, [props.stageElement])
-  const [movedPins, setMovedPins] = useState<Record<number, boolean>>({}) // 各ピンの移動状態を管理するオブジェクト
 
-  // ピンの移動を確認し、スコアを更新する関数
-  useEffect(() => {
-    const checkPinMovement = () => {
-      if (pinsRef.current) {
-        pinsRef.current.forEach((pin, index) => {
-          const originalPin = props.stageElement.pins[index]
-          const moved = pin.position.x !== originalPin.x || pin.position.y !== originalPin.y
-          if (moved && !movedPins[index]) {
-            props.setScore((prevScore) => prevScore + 1) // スコアを更新
-            // ピンの移動状態を更新する
-            setMovedPins((prevMovedPins) => ({ ...prevMovedPins, [index]: true }))
-          }
-        })
-      }
-    }
+  async function countPins() {
+    // 0.2秒待つ
+    await new Promise((resolve) => setTimeout(resolve, 200))
 
-    const interval = setInterval(checkPinMovement, 1000)
-
-    return () => clearInterval(interval)
-  }, [movedPins, props, props.stageElement.pins])
+    // ピンの数をカウントする
+    const pinsCount = pinsRef.current?.filter((pin) => !pin.isStatic).length || 0
+    // スコアを更新する
+    props.setScore(pinsCount)
+  }
 
   function moveBallPositionX(dx: number) {
     if (!ballRef.current) return
@@ -227,6 +216,7 @@ export default function Stage(props: Props) {
       >
         →
       </Button>
+      {/* FIXME: これを消す */}
       <Button onClick={props.handleNextStage}>Next Stage</Button>
     </>
   )
