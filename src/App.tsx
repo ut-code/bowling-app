@@ -1,12 +1,14 @@
-import { useState } from "react"
+import { useState, createContext } from "react"
 import Start from "./pages/Start/Start"
 import Play from "./pages/Play/Play"
 import Score from "./pages/Score/Score"
 import { Grid } from "@mui/material"
 
-export type TypeScore = {
-  stage: number
-  score: number
+export type GameScore = {
+  stageNumber: number
+  firstThrow: number | null
+  secondThrow: number | null
+  sumScore: number | null
 }
 
 export type Pin = {
@@ -25,23 +27,33 @@ export type StageElements = {
   pins: Pin[]
 }
 
+export const GameScoreContext = createContext<{
+  gameScores: GameScore[]
+  setGameScores: React.Dispatch<React.SetStateAction<GameScore[]>>
+}>({
+  gameScores: [],
+  setGameScores: () => {},
+})
+
 export default function App() {
   const [uiState, setUiState] = useState("Start")
-  const [scores, setScores] = useState<TypeScore[]>([])
+  const [gameScores, setGameScores] = useState<GameScore[]>([])
 
   return (
-    <Grid
-      container
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      width={"100vw"}
-      spacing={2}
-      style={{ margin: "8px" }}
-    >
-      {uiState === "Start" && <Start setUiState={setUiState} />}
-      {uiState === "Play" && <Play setUiState={setUiState} setScores={setScores} />}
-      {uiState === "Score" && <Score setUiState={setUiState} scores={scores} />}
-    </Grid>
+    <GameScoreContext.Provider value={{ gameScores, setGameScores }}>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        width={"100vw"}
+        spacing={2}
+        style={{ margin: "8px" }}
+      >
+        {uiState === "Start" && <Start setUiState={setUiState} />}
+        {uiState === "Play" && <Play setUiState={setUiState} />}
+        {uiState === "Score" && <Score setUiState={setUiState} />}
+      </Grid>
+    </GameScoreContext.Provider>
   )
 }

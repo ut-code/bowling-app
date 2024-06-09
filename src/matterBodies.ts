@@ -1,6 +1,7 @@
 import Matter from "matter-js"
 import { Obstacle, Pin } from "./App"
 import ballImg from "./assets/bowling_ball.png"
+import blockImg from "./assets/block.jpg"
 
 export function createArrowGuide(ballPosition: { x: number; y: number }, arrowOffset: number) {
   // 先端の三角形の**重心**。手動で計算。
@@ -78,10 +79,9 @@ export function rotateArrowGuide(arrowGuide: Matter.Body | null, angle: number, 
 
 export function createWalls(wallWidth: number) {
   return [
-    Matter.Bodies.rectangle(400, 0, 800, wallWidth, { isStatic: true }),
-    Matter.Bodies.rectangle(400, 600, 800, wallWidth, { isStatic: true }),
-    Matter.Bodies.rectangle(800, 300, wallWidth, 600, { isStatic: true }),
-    Matter.Bodies.rectangle(0, 300, wallWidth, 600, { isStatic: true }),
+    Matter.Bodies.rectangle(800, 300, wallWidth, 600, { isStatic: true, render: { fillStyle: "#6B593E" } }),
+    Matter.Bodies.rectangle(0, 300, wallWidth, 600, { isStatic: true, render: { fillStyle: "#6B593E" } }), // 左
+    Matter.Bodies.rectangle(400, 0, 800, wallWidth, { isStatic: true, render: { fillStyle: "white" } }),
   ]
 }
 
@@ -92,7 +92,6 @@ export function createBall(ballPositionX: number) {
     frictionAir: 0.02,
     restitution: 0.3,
     render: {
-      fillStyle: "blue",
       sprite: {
         texture: ballImg,
         xScale: 0.3,
@@ -106,7 +105,7 @@ export function createPins(pins: Pin[]) {
   return pins.map((position) =>
     Matter.Bodies.circle(position.x, position.y, 6, {
       isStatic: true,
-      density: 1,
+      density: 0.1,
       render: {
         fillStyle: "white",
       },
@@ -116,9 +115,16 @@ export function createPins(pins: Pin[]) {
 
 export function createObstacles(obstacles: Obstacle[]) {
   return obstacles.map((position) =>
-    Matter.Bodies.rectangle(position.x, position.y, 200, 50, {
+    Matter.Bodies.rectangle(position.x, position.y, 50, 50, {
       isStatic: true,
-      render: { fillStyle: "#ff0000" },
+      render: {
+        fillStyle: "blue",
+        sprite: {
+          texture: blockImg,
+          xScale: 0.01,
+          yScale: 0.01,
+        },
+      },
     }),
   )
 }
