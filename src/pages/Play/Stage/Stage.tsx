@@ -257,12 +257,12 @@ export default function Stage(props: Props) {
       </Button>
       <IconButton
         onClick={() => {
-          changeGravityAngle(30)
+          changeGravityAngle(10)
           if (!ballRef.current?.position.x) return
           if (!ballRef.current?.position.y) return
           rotateArrowGuide(
             arrowGuideRef.current,
-            (-90 * Math.PI) / 180,
+            (-10 * Math.PI) / 180,
             ballRef.current.position.x,
             ballRef.current.position.y,
           )
@@ -272,12 +272,12 @@ export default function Stage(props: Props) {
       </IconButton>
       <IconButton
         onClick={() => {
-          changeGravityAngle(-30)
+          changeGravityAngle(-10)
           if (!ballRef.current?.position.x) return
           if (!ballRef.current?.position.y) return
           rotateArrowGuide(
             arrowGuideRef.current,
-            (90 * Math.PI) / 180,
+            (10 * Math.PI) / 180,
             ballRef.current.position.x,
             ballRef.current.position.y,
           )
@@ -285,20 +285,6 @@ export default function Stage(props: Props) {
       >
         <RotateRight />
       </IconButton>
-      <button
-        onClick={() => {
-          if (!ballRef.current?.position.x) return
-          if (!ballRef.current?.position.y) return
-          rotateArrowGuide(
-            arrowGuideRef.current,
-            (45 * Math.PI) / 180,
-            ballRef.current.position.x,
-            ballRef.current.position.y,
-          )
-        }}
-      >
-        sample
-      </button>
       <Button onClick={props.handleNextStage}>Next Stage</Button>
     </div>
   )
