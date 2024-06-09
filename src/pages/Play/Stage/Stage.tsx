@@ -160,7 +160,7 @@ export default function Stage(props: Props) {
 			}
 			console.log("2nd throw")
 			return prevGameScores.map((gameScore) => {
-				if (gameScore.stageNumber === props.stageNumber) {
+				if (gameScore.stageNumber === props.stageNumber && gameScore.firstThrow != null) {
 					return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow }
 				}
 				return gameScore
