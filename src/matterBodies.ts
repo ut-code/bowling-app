@@ -74,7 +74,7 @@ export function createBall(ballPositionX: number) {
   })
 }
 
-export function createPins(pins: Pin[]){
+export function createPins(pins: Pin[]) {
   return pins.map((position) =>
     Matter.Bodies.circle(position.x, position.y, 6, {
       isStatic: true,

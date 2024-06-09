@@ -1,46 +1,30 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material"
-
-import { TypeScore } from "../../App"
+import { Button } from "@mui/material"
+import { GameScore } from "../../App"
+import ScoreSheet from "./ScoreSheet"
 
 interface Props {
   setUiState: (uiState: string) => void
-  scores: TypeScore[]
+  gameScores: GameScore[]
 }
 
 const currentScore = 100
 
+// ScoreSheetにリネームしたほうがいいかも
 export default function Score(props: Props) {
-  const scores =
-    props.scores.length > 0
-      ? props.scores
+  const gameScores: GameScore[] =
+    props.gameScores.length > 0
+      ? props.gameScores
       : [
-          { stage: 1, score: 150 },
-          { stage: 2, score: 200 },
-          { stage: 3, score: 180 },
+          { stageNumber: 1, firstThrow: 3, secondThrow: 4, totalScore: 150 },
+          { stageNumber: 2, firstThrow: 5, secondThrow: 5, totalScore: 200 },
+          { stageNumber: 3, firstThrow: 10, secondThrow: null, totalScore: 240 },
         ]
 
   return (
     <div>
       <h1>スコア</h1>
       <h1>{currentScore}点</h1>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ステージ</TableCell>
-              <TableCell>点数</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {scores.map((score) => (
-              <TableRow key={score.stage}>
-                <TableCell>{score.stage}</TableCell>
-                <TableCell>{score.score}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <ScoreSheet gameScores={gameScores} />
       <Button onClick={() => props.setUiState("Start")}>タイトルに戻る</Button>
     </div>
   )

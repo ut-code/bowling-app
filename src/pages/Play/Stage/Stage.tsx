@@ -1,19 +1,22 @@
 import { Button } from "@mui/material"
 import Matter from "matter-js"
 import { useEffect, useRef, useState } from "react"
-import { StageElements, TypeScore } from "../../../App"
+import { StageElements, GameScore } from "../../../App"
 import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
+import StageHeader from "./StageHeader"
 
 const RENDERER_WIDTH = 800
-const RENDERER_HEIGHT = 600
+const RENDERER_HEIGHT = 550
 const WALL_WIDTH = 50
 const INITIAL_BALL_POSITION = { x: 400, y: 500 }
 
 interface Props {
   stageElement: StageElements
+  totalStageCount: number
   stageNumber: number
   handleNextStage: () => void
-  setScores: (scores: TypeScore[]) => void
+  gameScores: GameScore[]
+  setGameScores: React.Dispatch<React.SetStateAction<GameScore[]>>
   score: number // スコアを受け取るプロップス
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
@@ -180,7 +183,7 @@ export default function Stage(props: Props) {
     return () => clearInterval(interval)
   }, [movedPins, props, props.stageElement.pins])
 
-  function moveBallPositionX (dx: number) {
+  function moveBallPositionX(dx: number) {
     if (!ballRef.current) return
     if (!arrowGuideRef.current) return
     const newPositionX = ballRef.current.position.x + dx
@@ -199,8 +202,14 @@ export default function Stage(props: Props) {
   }
 
   return (
-    <div>
-      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "600px" }}></div>
+    <>
+      <StageHeader
+        totalStageCount={props.totalStageCount}
+        gameScores={props.gameScores}
+        score={props.score}
+        stageNumber={props.stageNumber}
+      />
+      <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
       <Button
         onClick={() => {
           moveBallPositionX(-10)
@@ -219,6 +228,6 @@ export default function Stage(props: Props) {
         →
       </Button>
       <Button onClick={props.handleNextStage}>Next Stage</Button>
-    </div>
+    </>
   )
 }

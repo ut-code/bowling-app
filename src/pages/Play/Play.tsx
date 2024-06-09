@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { StageElements, TypeScore } from "../../App"
+import { StageElements, GameScore } from "../../App"
+import { Grid } from "@mui/material"
 import Stage from "./Stage/Stage"
-import StageHeader from "./Stage/StageHeader"
 
 const stageElements: StageElements[] = [
   {
-    stageNumber: 0,
+    stageNumber: 1,
     obstacles: [{ x: 200, y: 300 }],
     pins: [
       { x: 400, y: 110 },
@@ -21,7 +21,7 @@ const stageElements: StageElements[] = [
     ],
   },
   {
-    stageNumber: 1,
+    stageNumber: 2,
     obstacles: [{ x: 400, y: 300 }],
     pins: [
       { x: 400, y: 110 },
@@ -37,7 +37,7 @@ const stageElements: StageElements[] = [
     ],
   },
   {
-    stageNumber: 2,
+    stageNumber: 3,
     obstacles: [
       { x: 100, y: 100 },
       { x: 700, y: 100 },
@@ -54,19 +54,18 @@ const stageElements: StageElements[] = [
       { x: 420, y: 50 },
       { x: 460, y: 50 },
     ],
-  }
+  },
 ]
 
 interface Props {
   setUiState: (uiState: string) => void
-  setScores: (scores: TypeScore[]) => void
+  gameScores: GameScore[]
+  setGameScores: React.Dispatch<React.SetStateAction<GameScore[]>>
 }
 
 export default function Play(props: Props) {
-  const [stageNumber, setStageNumber] = useState(0)
-
+  const [stageNumber, setStageNumber] = useState(1)
   const [score, setScore] = useState(0) // スコアの状態を管理
-
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
   if (!stageElement) {
@@ -81,16 +80,17 @@ export default function Play(props: Props) {
     setStageNumber((number) => number + 1)
   }
   return (
-    <div>
-      <StageHeader score={score} stageNumber={stageNumber} />
+    <Grid>
       <Stage
         stageElement={stageElement}
+        totalStageCount={stageElements.length}
         stageNumber={stageNumber}
         handleNextStage={handleNextStage}
-        setScores={props.setScores}
+        gameScores={props.gameScores}
+        setGameScores={props.setGameScores}
         score={score} // スコアをStageコンポーネントに渡す
         setScore={setScore} // スコアを更新する関数をStageコンポーネントに渡す
       />
-    </div>
+    </Grid>
   )
 }
