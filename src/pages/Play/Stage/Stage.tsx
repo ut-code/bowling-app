@@ -91,22 +91,22 @@ export default function Stage(props: Props) {
         }
 
         // 障害物とボールの衝突
-        if (
-          (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
-          (bodyA === ballRef.current || bodyB === ballRef.current)
-        ) {
-          // reset
-          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
-          Matter.Body.setStatic(ballRef.current, true)
-          if (arrowGuideRef.current) {
-            Matter.World.add(engine.world, [arrowGuideRef.current])
-            Matter.Body.setPosition(arrowGuideRef.current, {
-              x: INITIAL_BALL_POSITION.x,
-              y: 241,
-            })
-            Matter.Body.setAngle(arrowGuide, 0)
-          }
-        }
+        // if (
+        //   (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
+        //   (bodyA === ballRef.current || bodyB === ballRef.current)
+        // ) {
+        //   // reset
+        //   Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+        //   Matter.Body.setStatic(ballRef.current, true)
+        //   if (arrowGuideRef.current) {
+        //     Matter.World.add(engine.world, [arrowGuideRef.current])
+        //     Matter.Body.setPosition(arrowGuideRef.current, {
+        //       x: INITIAL_BALL_POSITION.x,
+        //       y: 241,
+        //     })
+        //     Matter.Body.setAngle(arrowGuide, 0)
+        //   }
+        // }
         // 壁との衝突
         if (
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
