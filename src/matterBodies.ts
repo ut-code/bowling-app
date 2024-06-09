@@ -2,13 +2,13 @@ import Matter from "matter-js"
 import { Obstacle, Pin } from "./App"
 import ballImg from "./assets/bowling_ball.png"
 
-export function createArrowGuide(ballPosition: {x: number, y: number}, arrowOffset: number) {
+export function createArrowGuide(ballPosition: { x: number; y: number }, arrowOffset: number) {
   // 先端の三角形の**重心**。手動で計算。
   const TRIANGLE_CENTER = -320
 
   // 長方形の中心。手動で計算。
   const RECTANGLE_CENTER = -150
-  
+
   // 先端の三角形
   const triangle = Matter.Bodies.fromVertices(
     ballPosition.x,
@@ -53,30 +53,27 @@ export function createArrowGuide(ballPosition: {x: number, y: number}, arrowOffs
   return Matter.Body.create({
     isStatic: true,
     collisionFilter: { category: 0x0001, mask: 0x0002 },
-    parts: [
-      triangle,
-      coloredRectangle,
-    ],
+    parts: [triangle, coloredRectangle],
   })
 }
 
 export function rotateArrowGuide(arrowGuide: Matter.Body | null, angle: number, pivotX: number, pivotY: number) {
   if (!arrowGuide) return
 
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
+  const cos = Math.cos(angle)
+  const sin = Math.sin(angle)
 
   // 重心から回転中心への相対位置を求める
-  const dx = arrowGuide.position.x - pivotX;
-  const dy = arrowGuide.position.y - pivotY;
+  const dx = arrowGuide.position.x - pivotX
+  const dy = arrowGuide.position.y - pivotY
 
   // 回転後の新しい位置
-  const newX = pivotX + (dx * cos - dy * sin);
-  const newY = pivotY + (dx * sin + dy * cos);
+  const newX = pivotX + (dx * cos - dy * sin)
+  const newY = pivotY + (dx * sin + dy * cos)
 
   // 物体の位置と角度を設定
-  Matter.Body.setPosition(arrowGuide, { x: newX, y: newY });
-  Matter.Body.setAngle(arrowGuide, arrowGuide.angle + angle);
+  Matter.Body.setPosition(arrowGuide, { x: newX, y: newY })
+  Matter.Body.setAngle(arrowGuide, arrowGuide.angle + angle)
 }
 
 export function createWalls(wallWidth: number) {
@@ -105,7 +102,7 @@ export function createBall(ballPositionX: number) {
   })
 }
 
-export function createPins(pins: Pin[]){
+export function createPins(pins: Pin[]) {
   return pins.map((position) =>
     Matter.Bodies.circle(position.x, position.y, 6, {
       isStatic: true,

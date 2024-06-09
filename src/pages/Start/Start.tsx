@@ -15,12 +15,7 @@ export default function Start(props: Props) {
     width: "30%",
   })
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Grid container direction="column" justifyContent="center" alignItems="center">
       <img src={logo} alt="壁よけボウリング" width={"50%"} />
       <TextField id="outlined-basic" label="ユーザー名" variant="outlined" margin="normal" style={{ width: "30%" }} />
       <RedButton onClick={() => props.setUiState("Play")}>プレイ</RedButton>

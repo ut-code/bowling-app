@@ -54,7 +54,7 @@ const stageElements: StageElements[] = [
       { x: 420, y: 50 },
       { x: 460, y: 50 },
     ],
-  }
+  },
 ]
 
 interface Props {
@@ -66,7 +66,6 @@ export default function Play(props: Props) {
   const [stageNumber, setStageNumber] = useState(0)
 
   const [score, setScore] = useState(0) // スコアの状態を管理
-
 
   const stageElement = stageElements.find((element) => element.stageNumber === stageNumber)
   if (!stageElement) {
