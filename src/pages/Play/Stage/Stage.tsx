@@ -196,15 +196,14 @@ export default function Stage(props: Props) {
     Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
   }
 
-
- function throwBall() {
-  if (ballRef.current) {
-    Matter.Body.setStatic(ballRef.current, false)
+  function throwBall() {
+    if (ballRef.current) {
+      Matter.Body.setStatic(ballRef.current, false)
+    }
+    if (engineRef.current && arrowGuideRef.current) {
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
+    }
   }
-  if (engineRef.current && arrowGuideRef.current) {
-    Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
-  }
-}
 
   return (
     <>
@@ -227,9 +226,6 @@ export default function Stage(props: Props) {
       >
         →
       </Button>
-      {/* FIXME: これを消す */}
-      <Button onClick={props.handleNextStage}>Next Stage</Button>
-      <Button onClick={() => console.log(gameScores)}>gameScores</Button>
     </>
   )
 }
