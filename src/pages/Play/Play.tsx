@@ -6,8 +6,7 @@ import Stage from "./Stage/Stage"
 const stageElements: StageElements[] = [
   {
     stageNumber: 1,
-    obstacles: [{ x: 375, y: 300 },
-      ],
+    obstacles: [{ x: 375, y: 300 }],
     pins: [
       { x: 400, y: 110 },
       { x: 380, y: 90 },
@@ -51,7 +50,7 @@ const stageElements: StageElements[] = [
       { x: 470, y: 180 },
     ],
     pins: [
-      { x: 400, y: 10 },
+      { x: 400, y: 110 },
       { x: 380, y: 90 },
       { x: 420, y: 90 },
       { x: 360, y: 70 },
@@ -76,9 +75,9 @@ const stageElements: StageElements[] = [
       { x: 460, y: 450 },
       { x: 650, y: 500 },
     ],
-    
+
     pins: [
-      { x: 400, y: 10 },
+      { x: 400, y: 110 },
       { x: 380, y: 90 },
       { x: 420, y: 90 },
       { x: 360, y: 70 },
@@ -107,7 +106,7 @@ const stageElements: StageElements[] = [
       { x: 450, y: 400 },
     ],
     pins: [
-      { x: 400, y: 10 },
+      { x: 400, y: 110 },
       { x: 380, y: 90 },
       { x: 420, y: 90 },
       { x: 360, y: 70 },
