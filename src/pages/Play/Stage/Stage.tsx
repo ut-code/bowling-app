@@ -14,6 +14,7 @@ import {
 import StageHeader from "./StageHeader"
 import bowlingField from "../../../assets/bowling_field.jpg"
 import { GameScoreContext } from "../../../App"
+import { RedButton } from "../../../RedButton"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 550
@@ -245,53 +246,55 @@ export default function Stage(props: Props) {
     <>
       <StageHeader totalStageCount={props.totalStageCount} score={props.score} stageNumber={props.stageNumber} />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
-      <Button
-        onClick={() => {
-          moveBallPositionX(-10)
-        }}
-      >
-        ←
-      </Button>
-      <Button onClick={throwBall} variant="contained">
-        Throw!
-      </Button>
-      <Button
-        onClick={() => {
-          moveBallPositionX(10)
-        }}
-      >
-        →
-      </Button>
-      <IconButton
-        onClick={() => {
-          changeGravityAngle(10)
-          if (!ballRef.current?.position.x) return
-          if (!ballRef.current?.position.y) return
-          rotateArrowGuide(
-            arrowGuideRef.current,
-            (-10 * Math.PI) / 180,
-            ballRef.current.position.x,
-            ballRef.current.position.y,
-          )
-        }}
-      >
-        <RotateLeft />
-      </IconButton>
-      <IconButton
-        onClick={() => {
-          changeGravityAngle(-10)
-          if (!ballRef.current?.position.x) return
-          if (!ballRef.current?.position.y) return
-          rotateArrowGuide(
-            arrowGuideRef.current,
-            (10 * Math.PI) / 180,
-            ballRef.current.position.x,
-            ballRef.current.position.y,
-          )
-        }}
-      >
-        <RotateRight />
-      </IconButton>
+      <div style={{ marginTop: "8px" }}>
+				<Button
+					onClick={() => {
+						moveBallPositionX(-10)
+					}}
+				>
+					←
+				</Button>
+				<RedButton onClick={throwBall} variant="contained">
+					Throw!
+				</RedButton>
+				<Button
+					onClick={() => {
+						moveBallPositionX(10)
+					}}
+				>
+					→
+				</Button>
+				<IconButton
+					onClick={() => {
+						changeGravityAngle(10)
+						if (!ballRef.current?.position.x) return
+						if (!ballRef.current?.position.y) return
+						rotateArrowGuide(
+							arrowGuideRef.current,
+							(-10 * Math.PI) / 180,
+							ballRef.current.position.x,
+							ballRef.current.position.y,
+						)
+					}}
+				>
+					<RotateLeft />
+				</IconButton>
+				<IconButton
+					onClick={() => {
+						changeGravityAngle(-10)
+						if (!ballRef.current?.position.x) return
+						if (!ballRef.current?.position.y) return
+						rotateArrowGuide(
+							arrowGuideRef.current,
+							(10 * Math.PI) / 180,
+							ballRef.current.position.x,
+							ballRef.current.position.y,
+						)
+					}}
+				>
+					<RotateRight />
+				</IconButton>
+			</div>
     </>
   )
 }
