@@ -82,6 +82,7 @@ export default function Stage(props: Props) {
           (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
           (bodyA === ballRef.current || bodyB === ballRef.current)
         ) {
+          countPins()
           // reset
           Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
           Matter.Body.setStatic(ballRef.current, true)
@@ -161,12 +162,21 @@ export default function Stage(props: Props) {
 			console.log("2nd throw")
 			return prevGameScores.map((gameScore) => {
 				if (gameScore.stageNumber === props.stageNumber) {
-					return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow }
+					return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow! }
 				}
 				return gameScore
 			})
 		})
   }
+
+  useEffect(() => {
+    if (!gameScores.length) return
+    // 1投目ストライクもしくは2投目終了後にステージ変更
+    const lastGameScore = gameScores[gameScores.length - 1]
+    if (lastGameScore.firstThrow === 10 || lastGameScore.secondThrow !== null) {
+      props.handleNextStage()
+    }
+  }, [gameScores])
 
   function moveBallPositionX(dx: number) {
     if (!ballRef.current) return
