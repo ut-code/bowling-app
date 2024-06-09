@@ -34,14 +34,22 @@ export default function ScoreSheet() {
             {calculatedGameScores.map((score) => (
               <Fragment key={score.stageNumber}>
                 <TableCell align="center" sx={{ border: "2px solid rgb(30, 30, 30)" }}>
-                  {score.firstThrow === null ? "" : score.firstThrow === 10 ? "X" : score.firstThrow ?? "-"}
+                  {score.firstThrow === null
+                    ? ""
+                    : score.firstThrow === 0
+                      ? "G"
+                      : score.firstThrow === 10
+                        ? "X"
+                        : score.firstThrow ?? "-"}
                 </TableCell>
                 <TableCell align="center" sx={{ border: "2px solid rgb(30, 30, 30)" }}>
                   {score.firstThrow === null || score.secondThrow === null
                     ? ""
-                    : score.firstThrow + score.secondThrow === 10
-                      ? "/"
-                      : score.secondThrow ?? "-"}
+                    : score.secondThrow === 0
+                      ? "-"
+                      : score.firstThrow + score.secondThrow === 10
+                        ? "/"
+                        : score.secondThrow ?? "-"}
                 </TableCell>
               </Fragment>
             ))}

@@ -196,15 +196,14 @@ export default function Stage(props: Props) {
     Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
   }
 
-
- function throwBall() {
-  if (ballRef.current) {
-    Matter.Body.setStatic(ballRef.current, false)
+  function throwBall() {
+    if (ballRef.current) {
+      Matter.Body.setStatic(ballRef.current, false)
+    }
+    if (engineRef.current && arrowGuideRef.current) {
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
+    }
   }
-  if (engineRef.current && arrowGuideRef.current) {
-    Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
-  }
-}
 
   return (
     <>
