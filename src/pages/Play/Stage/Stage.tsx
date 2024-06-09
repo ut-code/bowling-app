@@ -1,5 +1,5 @@
-import { Button, IconButton } from "@mui/material"
-import { RotateLeft, RotateRight } from "@mui/icons-material"
+import { IconButton } from "@mui/material"
+import { RotateLeft, RotateRight, ArrowRight, ArrowLeft } from "@mui/icons-material"
 import Matter from "matter-js"
 import { useEffect, useRef, useContext } from "react"
 import { StageElements } from "../../../App"
@@ -14,6 +14,7 @@ import {
 import StageHeader from "./StageHeader"
 import bowlingField from "../../../assets/bowling_field.jpg"
 import { GameScoreContext } from "../../../App"
+import { RedButton } from "../../../RedButton"
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 550
@@ -90,22 +91,22 @@ export default function Stage(props: Props) {
         }
 
         // 障害物とボールの衝突
-        if (
-          (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
-          (bodyA === ballRef.current || bodyB === ballRef.current)
-        ) {
-          // reset
-          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
-          Matter.Body.setStatic(ballRef.current, true)
-          if (arrowGuideRef.current) {
-            Matter.World.add(engine.world, [arrowGuideRef.current])
-            Matter.Body.setPosition(arrowGuideRef.current, {
-              x: INITIAL_BALL_POSITION.x,
-              y: 241,
-            })
-            Matter.Body.setAngle(arrowGuide, 0)
-          }
-        }
+        // if (
+        //   (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
+        //   (bodyA === ballRef.current || bodyB === ballRef.current)
+        // ) {
+        //   // reset
+        //   Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+        //   Matter.Body.setStatic(ballRef.current, true)
+        //   if (arrowGuideRef.current) {
+        //     Matter.World.add(engine.world, [arrowGuideRef.current])
+        //     Matter.Body.setPosition(arrowGuideRef.current, {
+        //       x: INITIAL_BALL_POSITION.x,
+        //       y: 241,
+        //     })
+        //     Matter.Body.setAngle(arrowGuide, 0)
+        //   }
+        // }
         // 壁との衝突
         if (
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
@@ -245,53 +246,57 @@ export default function Stage(props: Props) {
     <>
       <StageHeader totalStageCount={props.totalStageCount} score={props.score} stageNumber={props.stageNumber} />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
-      <Button
-        onClick={() => {
-          moveBallPositionX(-10)
-        }}
-      >
-        ←
-      </Button>
-      <Button onClick={throwBall} variant="contained">
-        Throw!
-      </Button>
-      <Button
-        onClick={() => {
-          moveBallPositionX(10)
-        }}
-      >
-        →
-      </Button>
-      <IconButton
-        onClick={() => {
-          changeGravityAngle(10)
-          if (!ballRef.current?.position.x) return
-          if (!ballRef.current?.position.y) return
-          rotateArrowGuide(
-            arrowGuideRef.current,
-            (-10 * Math.PI) / 180,
-            ballRef.current.position.x,
-            ballRef.current.position.y,
-          )
-        }}
-      >
-        <RotateLeft />
-      </IconButton>
-      <IconButton
-        onClick={() => {
-          changeGravityAngle(-10)
-          if (!ballRef.current?.position.x) return
-          if (!ballRef.current?.position.y) return
-          rotateArrowGuide(
-            arrowGuideRef.current,
-            (10 * Math.PI) / 180,
-            ballRef.current.position.x,
-            ballRef.current.position.y,
-          )
-        }}
-      >
-        <RotateRight />
-      </IconButton>
+			<div style={{ marginTop: "8px", display: "flex", justifyContent: "center" }}>
+				<IconButton
+					onClick={() => {
+						moveBallPositionX(-10)
+					}}
+				>
+					<ArrowLeft />
+				</IconButton>
+				<RedButton onClick={throwBall} variant="contained">
+					Throw!
+				</RedButton>
+				<IconButton
+					onClick={() => {
+						moveBallPositionX(10)
+					}}
+				>
+					<ArrowRight />
+				</IconButton>
+			</div>
+			<div style={{ marginTop: "8px", display: "flex", justifyContent: "center" }}>
+				<IconButton
+					onClick={() => {
+						changeGravityAngle(10)
+						if (!ballRef.current?.position.x) return
+						if (!ballRef.current?.position.y) return
+						rotateArrowGuide(
+							arrowGuideRef.current,
+							(-10 * Math.PI) / 180,
+							ballRef.current.position.x,
+							ballRef.current.position.y,
+						)
+					}}
+				>
+					<RotateLeft />
+				</IconButton>
+				<IconButton
+					onClick={() => {
+						changeGravityAngle(-10)
+						if (!ballRef.current?.position.x) return
+						if (!ballRef.current?.position.y) return
+						rotateArrowGuide(
+							arrowGuideRef.current,
+							(10 * Math.PI) / 180,
+							ballRef.current.position.x,
+							ballRef.current.position.y,
+						)
+					}}
+				>
+					<RotateRight />
+				</IconButton>
+			</div>
     </>
   )
 }

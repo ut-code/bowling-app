@@ -24,7 +24,7 @@ export default function ScoreSheet() {
                 <b>{index + 1}</b>
               </TableCell>
             ))}
-            <TableCell align="center" colSpan={2}>
+            <TableCell align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)", backgroundColor: "rgb(30, 30, 30)", color: "white" }}>
               Total
             </TableCell>
           </TableRow>
@@ -53,8 +53,8 @@ export default function ScoreSheet() {
                 </TableCell>
               </Fragment>
             ))}
-            <TableCell align="center" colSpan={2}>
-              {totalScore}
+            <TableCell align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)" }}>
+              <b>{totalScore}</b>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -65,7 +65,7 @@ export default function ScoreSheet() {
                 </TableCell>
               </Fragment>
             ))}
-            <TableCell align="center" colSpan={2}>
+            <TableCell align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)" }}>
               {totalScore}
             </TableCell>
           </TableRow>
