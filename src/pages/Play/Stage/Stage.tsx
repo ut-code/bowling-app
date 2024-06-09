@@ -77,22 +77,22 @@ export default function Stage(props: Props) {
           Matter.Body.setStatic(bodyB, false)
         }
 
-        // 障害物とボールの衝突
-        if (
-          (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
-          (bodyA === ballRef.current || bodyB === ballRef.current)
-        ) {
-          // reset
-          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
-          Matter.Body.setStatic(ballRef.current, true)
-          if (arrowGuideRef.current) {
-            Matter.World.add(engine.world, [arrowGuideRef.current])
-            Matter.Body.setPosition(arrowGuideRef.current, {
-              x: INITIAL_BALL_POSITION.x,
-              y: arrowGuideRef.current.position.y,
-            })
-          }
-        }
+        // // 障害物とボールの衝突
+        // if (
+        //   (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
+        //   (bodyA === ballRef.current || bodyB === ballRef.current)
+        // ) {
+        //   // reset
+        //   Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+        //   Matter.Body.setStatic(ballRef.current, true)
+        //   if (arrowGuideRef.current) {
+        //     Matter.World.add(engine.world, [arrowGuideRef.current])
+        //     Matter.Body.setPosition(arrowGuideRef.current, {
+        //       x: INITIAL_BALL_POSITION.x,
+        //       y: arrowGuideRef.current.position.y,
+        //     })
+        //   }
+        // }
         // 壁とボールの衝突
         if (
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
@@ -177,14 +177,15 @@ export default function Stage(props: Props) {
     Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
   }
 
-  function throwBall() {
-    if (ballRef.current) {
-      Matter.Body.setStatic(ballRef.current, false)
-    }
-    if (engineRef.current && arrowGuideRef.current) {
-      Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
-    }
+
+ function throwBall() {
+  if (ballRef.current) {
+    Matter.Body.setStatic(ballRef.current, false)
   }
+  if (engineRef.current && arrowGuideRef.current) {
+    Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
+  }
+}
 
   return (
     <>
