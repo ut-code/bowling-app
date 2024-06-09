@@ -144,31 +144,32 @@ export default function Stage(props: Props) {
     }
   }, [props.stageElement])
 
-  async function countPins() {
-    // 0.2秒待つ
-    await new Promise((resolve) => setTimeout(resolve, 200))
-
-    // ピンの数をカウントする
-    const pinsCount = pinsRef.current?.filter((pin) => !pin.isStatic).length || 0
-    // スコアを更新する
-    props.setScore(pinsCount)
-		// 1投目: push
-		if (gameScores.length === 0 || gameScores[gameScores.length - 1].stageNumber !== props.stageNumber) {
-			setGameScores(
-				[...gameScores, { stageNumber: props.stageNumber, firstThrow: pinsCount, secondThrow: null, sumScore: null, totalScore: null }]
-			)
-			return
-		}
-		// 2投目: update
-		const newGameScores = gameScores.map((gameScore) => {
-			if (gameScore.stageNumber === props.stageNumber) {
-				return { ...gameScore, secondThrow: pinsCount }
+  function countPins() {
+		// 0.2秒待ってから処理を実行
+		setTimeout(() => {
+			// ピンの数をカウントする
+			const pinsCount = pinsRef.current?.filter((pin) => !pin.isStatic).length ?? 0
+			// スコアを更新する
+			props.setScore(pinsCount)
+			// 1投目: push
+			if (gameScores.length === 0 || gameScores[gameScores.length - 1].stageNumber !== props.stageNumber) {
+				const newGameScores = [...gameScores, { stageNumber: props.stageNumber, firstThrow: pinsCount, secondThrow: null, sumScore: null, totalScore: null }]
+				setGameScores(newGameScores)
+				console.log("1st throw")
+				return
 			}
-			return gameScore
-		})
-		console.log(newGameScores)
-		setGameScores(newGameScores)
-		props.handleNextStage()
+			// 2投目: update
+			const newGameScores = gameScores.map((gameScore) => {
+				if (gameScore.stageNumber === props.stageNumber) {
+					return { ...gameScore, secondThrow: pinsCount }
+				}
+				return gameScore
+			})
+			console.log("2nd throw")
+			console.log(newGameScores)
+			setGameScores(newGameScores)
+			props.handleNextStage()
+		}, 200)
   }
 
   function moveBallPositionX(dx: number) {
@@ -193,7 +194,6 @@ export default function Stage(props: Props) {
     <>
       <StageHeader
         totalStageCount={props.totalStageCount}
-        gameScores={gameScores}
         score={props.score}
         stageNumber={props.stageNumber}
       />
@@ -217,6 +217,7 @@ export default function Stage(props: Props) {
       </Button>
       {/* FIXME: これを消す */}
       <Button onClick={props.handleNextStage}>Next Stage</Button>
+			<Button onClick={() => console.log(gameScores)}>gameScores</Button>
     </>
   )
 }

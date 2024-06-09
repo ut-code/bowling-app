@@ -1,12 +1,12 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
-import { Fragment, useContext } from "react"
+import { Fragment, useContext, useMemo } from "react"
 import { GameScore } from "../../App"
 import { GameScoreContext } from "../../App"
 
 export default function ScoreSheet() {
   const { gameScores } = useContext(GameScoreContext)
   
-  const calculatedGameScores = calculate(gameScores)
+  const calculatedGameScores = useMemo(() => calculate(gameScores), [gameScores])
   const totalScore = calculatedGameScores[calculatedGameScores.length - 1]?.sumScore ?? 0
 
   return (
