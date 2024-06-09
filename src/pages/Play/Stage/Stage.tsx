@@ -183,29 +183,14 @@ export default function Stage(props: Props) {
     Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
   }
 
-  let resetTimeoutId: number | undefined; // タイマーのIDを保持する変数
 
-function throwBall() {
-  // タイマーが既にセットされていたらクリア
-  if (resetTimeoutId) {
-    clearTimeout(resetTimeoutId);
-  }
-
+ function throwBall() {
   if (ballRef.current) {
-    Matter.Body.setStatic(ballRef.current, false);
+    Matter.Body.setStatic(ballRef.current, false)
   }
-
   if (engineRef.current && arrowGuideRef.current) {
-    Matter.World.remove(engineRef.current.world, arrowGuideRef.current);
+    Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
   }
-
-  // 5秒後にボールの位置を元に戻す
-  resetTimeoutId = setTimeout(() => {
-    if (ballRef.current) {
-      Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION);
-      Matter.Body.setStatic(ballRef.current, true);
-    }
-  }, 5000); // 5秒後に実行されるように1000ミリ秒をかけます
 }
 
   return (
