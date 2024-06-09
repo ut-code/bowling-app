@@ -1,8 +1,16 @@
-import { Button } from "@mui/material"
+import { Button, IconButton } from "@mui/material"
+import { RotateLeft, RotateRight } from "@mui/icons-material"
 import Matter from "matter-js"
 import { useEffect, useRef, useContext } from "react"
 import { StageElements } from "../../../App"
-import { createArrowGuide, createBall, createObstacles, createPins, createWalls } from "../../../matterBodies"
+import {
+  createArrowGuide,
+  createBall,
+  createObstacles,
+  createPins,
+  createWalls,
+  rotateArrowGuide,
+} from "../../../matterBodies"
 import StageHeader from "./StageHeader"
 import bowlingField from "../../../assets/bowling_field.jpg"
 import { GameScoreContext } from "../../../App"
@@ -11,6 +19,8 @@ const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 550
 const WALL_WIDTH = 50
 const INITIAL_BALL_POSITION = { x: 400, y: 500 }
+const INITIAL_GRAVITY = { x: 0, y: -3 }
+const ARROW_OFFSET = -24
 
 interface Props {
   stageElement: StageElements
@@ -32,11 +42,13 @@ export default function Stage(props: Props) {
   const pinsRef = useRef<Matter.Body[] | null>(null)
   const obstaclesRef = useRef<Matter.Body[] | null>(null)
   const wallsRef = useRef<Matter.Body[] | null>(null)
+  const currentAngleRef = useRef<number>(0)
 
   useEffect(() => {
     if (!canvasRef.current) return
     const engine = Matter.Engine.create()
-    engine.gravity.y = -3
+    engine.gravity.x = INITIAL_GRAVITY.x
+    engine.gravity.y = INITIAL_GRAVITY.y
 
     const render = Matter.Render.create({
       element: canvasRef.current,
@@ -77,24 +89,24 @@ export default function Stage(props: Props) {
           Matter.Body.setStatic(bodyB, false)
         }
 
-        // // 障害物とボールの衝突
-        // if (
-        //   (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
-        //   (bodyA === ballRef.current || bodyB === ballRef.current)
-        // ) {
-        //   countPins()
-        //   // reset
-        //   Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
-        //   Matter.Body.setStatic(ballRef.current, true)
-        //   if (arrowGuideRef.current) {
-        //     Matter.World.add(engine.world, [arrowGuideRef.current])
-        //     Matter.Body.setPosition(arrowGuideRef.current, {
-        //       x: INITIAL_BALL_POSITION.x,
-        //       y: arrowGuideRef.current.position.y,
-        //     })
-        //   }
-        // }
-        // 壁とボールの衝突
+        // 障害物とボールの衝突
+        if (
+          (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
+          (bodyA === ballRef.current || bodyB === ballRef.current)
+        ) {
+          // reset
+          Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
+          Matter.Body.setStatic(ballRef.current, true)
+          if (arrowGuideRef.current) {
+            Matter.World.add(engine.world, [arrowGuideRef.current])
+            Matter.Body.setPosition(arrowGuideRef.current, {
+              x: INITIAL_BALL_POSITION.x,
+              y: 241,
+            })
+            Matter.Body.setAngle(arrowGuide, 0)
+          }
+        }
+        // 壁との衝突
         if (
           (wallsRef.current?.includes(bodyA) || wallsRef.current?.includes(bodyB)) &&
           (bodyA === ballRef.current || bodyB === ballRef.current)
@@ -107,10 +119,18 @@ export default function Stage(props: Props) {
             Matter.World.add(engine.world, [arrowGuideRef.current])
             Matter.Body.setPosition(arrowGuideRef.current, {
               x: INITIAL_BALL_POSITION.x,
-              y: arrowGuideRef.current.position.y,
+              y: 241,
             })
+            Matter.Body.setAngle(arrowGuide, 0)
           }
         }
+
+        // 重力方向は常にリセット
+        if (engineRef.current) {
+          engineRef.current.gravity.x = INITIAL_GRAVITY.x
+          engineRef.current.gravity.y = INITIAL_GRAVITY.y
+        }
+        currentAngleRef.current = 180
       })
     })
 
@@ -120,7 +140,7 @@ export default function Stage(props: Props) {
     const ball = createBall(INITIAL_BALL_POSITION.x)
     ballRef.current = ball
 
-    const arrowGuide = createArrowGuide(INITIAL_BALL_POSITION.x)
+    const arrowGuide = createArrowGuide(INITIAL_BALL_POSITION, ARROW_OFFSET)
     arrowGuideRef.current = arrowGuide
 
     const pins = createPins(props.stageElement.pins)
@@ -128,6 +148,8 @@ export default function Stage(props: Props) {
 
     const obstacles = createObstacles(props.stageElement.obstacles)
     obstaclesRef.current = obstacles
+
+    currentAngleRef.current = 180
 
     engineRef.current = engine
     renderRef.current = render
@@ -196,6 +218,20 @@ export default function Stage(props: Props) {
     Matter.Body.setPosition(arrowGuideRef.current, { x: newPositionX, y: arrowGuideRef.current.position.y })
   }
 
+  /**
+   * 重力の方向を変更する関数。ボールの方向コントロールに使用。
+   * @param angle 角度の変化量 (度数法) 反時計回りが正
+   */
+  function changeGravityAngle(angle: number) {
+    if (!engineRef.current) return
+    currentAngleRef.current += angle
+    const radian = currentAngleRef.current * (Math.PI / 180)
+
+    console.log("radians", Math.sin(radian), Math.cos(radian))
+    engineRef.current.gravity.x = Math.sin(radian)
+    engineRef.current.gravity.y = Math.cos(radian)
+  }
+
   function throwBall() {
     if (ballRef.current) {
       Matter.Body.setStatic(ballRef.current, false)
@@ -226,6 +262,36 @@ export default function Stage(props: Props) {
       >
         →
       </Button>
+      <IconButton
+        onClick={() => {
+          changeGravityAngle(10)
+          if (!ballRef.current?.position.x) return
+          if (!ballRef.current?.position.y) return
+          rotateArrowGuide(
+            arrowGuideRef.current,
+            (-10 * Math.PI) / 180,
+            ballRef.current.position.x,
+            ballRef.current.position.y,
+          )
+        }}
+      >
+        <RotateLeft />
+      </IconButton>
+      <IconButton
+        onClick={() => {
+          changeGravityAngle(-10)
+          if (!ballRef.current?.position.x) return
+          if (!ballRef.current?.position.y) return
+          rotateArrowGuide(
+            arrowGuideRef.current,
+            (10 * Math.PI) / 180,
+            ballRef.current.position.x,
+            ballRef.current.position.y,
+          )
+        }}
+      >
+        <RotateRight />
+      </IconButton>
     </>
   )
 }
