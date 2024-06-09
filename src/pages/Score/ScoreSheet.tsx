@@ -87,11 +87,11 @@ export function calculate(gameScores: GameScore[]) {
       // Strike
       frameScore =
         10 +
-        (gameScores[i + 1]?.firstThrow || 0) +
-        (gameScores[i + 1]?.secondThrow || gameScores[i + 2]?.firstThrow || 0)
+        (gameScores[i + 1]?.firstThrow ?? 0) +
+        (gameScores[i + 1]?.secondThrow ?? gameScores[i + 2]?.firstThrow ?? 0)
     } else if (frame.firstThrow! + frame.secondThrow! === 10) {
       // Spare
-      frameScore = 10 + (gameScores[i + 1]?.firstThrow || 0)
+      frameScore = 10 + (gameScores[i + 1]?.firstThrow ?? 0)
     } else {
       // Open frame
       frameScore = frame.firstThrow! + frame.secondThrow!
