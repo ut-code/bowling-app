@@ -3,11 +3,17 @@ import { RotateLeft, RotateRight } from "@mui/icons-material"
 import Matter from "matter-js"
 import { useEffect, useRef, useContext } from "react"
 import { StageElements } from "../../../App"
-import { createArrowGuide, createBall, createObstacles, createPins, createWalls, rotateArrowGuide} from "../../../matterBodies"
+import {
+  createArrowGuide,
+  createBall,
+  createObstacles,
+  createPins,
+  createWalls,
+  rotateArrowGuide,
+} from "../../../matterBodies"
 import StageHeader from "./StageHeader"
 import bowlingField from "../../../assets/bowling_field.jpg"
 import { GameScoreContext } from "../../../App"
-
 
 const RENDERER_WIDTH = 800
 const RENDERER_HEIGHT = 550
@@ -226,12 +232,13 @@ export default function Stage(props: Props) {
     engineRef.current.gravity.y = Math.cos(radian)
   }
 
- function throwBall() {
-  if (ballRef.current) {
-    Matter.Body.setStatic(ballRef.current, false)
-  }
-  if (engineRef.current && arrowGuideRef.current) {
-    Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
+  function throwBall() {
+    if (ballRef.current) {
+      Matter.Body.setStatic(ballRef.current, false)
+    }
+    if (engineRef.current && arrowGuideRef.current) {
+      Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
+    }
   }
 
   return (
