@@ -15,9 +15,9 @@ export default function Score(props: Props) {
     props.gameScores.length > 0
       ? props.gameScores
       : [
-          { stageNumber: 1, firstThrow: 3, secondThrow: 4, totalScore: 150 },
-          { stageNumber: 2, firstThrow: 5, secondThrow: 5, totalScore: 200 },
-          { stageNumber: 3, firstThrow: 10, secondThrow: null, totalScore: 240 },
+          { stageNumber: 1, firstThrow: 3, secondThrow: 4, sumScore: 150, totalScore: 111 },
+          { stageNumber: 2, firstThrow: 5, secondThrow: 5, sumScore: 200, totalScore: 111 },
+          { stageNumber: 3, firstThrow: 10, secondThrow: null, sumScore: 240, totalScore: 111 },
         ]
 
   return (
