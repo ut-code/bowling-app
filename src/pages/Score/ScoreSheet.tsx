@@ -16,7 +16,12 @@ export default function ScoreSheet(props: Props) {
         <TableHead>
           <TableRow>
             {calculatedGameScores.map((_, index) => (
-              <TableCell key={index} align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)", backgroundColor: "rgb(30, 30, 30)", color: "white" }}>
+              <TableCell
+                key={index}
+                align="center"
+                colSpan={2}
+                sx={{ border: "2px solid rgb(30, 30, 30)", backgroundColor: "rgb(30, 30, 30)", color: "white" }}
+              >
                 <b>{index + 1}</b>
               </TableCell>
             ))}
@@ -47,11 +52,11 @@ export default function ScoreSheet(props: Props) {
           </TableRow>
           <TableRow>
             {calculatedGameScores.map((score) => (
-							<Fragment key={score.stageNumber}>
-								<TableCell align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)" }}>
-									{score.sumScore ?? "-"}
-								</TableCell>
-							</Fragment>
+              <Fragment key={score.stageNumber}>
+                <TableCell align="center" colSpan={2} sx={{ border: "2px solid rgb(30, 30, 30)" }}>
+                  {score.sumScore ?? "-"}
+                </TableCell>
+              </Fragment>
             ))}
             <TableCell align="center" colSpan={2}>
               {totalScore}
@@ -63,7 +68,7 @@ export default function ScoreSheet(props: Props) {
   )
 }
 
-export function calculate (gameScores: GameScore[]) {
+export function calculate(gameScores: GameScore[]) {
   const sumScores = []
   let cumulativeScore = 0
 
