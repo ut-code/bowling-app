@@ -21,8 +21,8 @@ interface Props {
   setScore: React.Dispatch<React.SetStateAction<number>> // スコアを更新するプロップス
 }
 
-export default function Stage(props: Props) {	
-	const { gameScores, setGameScores } = useContext(GameScoreContext)
+export default function Stage(props: Props) {
+  const { gameScores, setGameScores } = useContext(GameScoreContext)
 
   const engineRef = useRef<Matter.Engine | null>(null)
   const renderRef = useRef<Matter.Render | null>(null)
@@ -82,6 +82,7 @@ export default function Stage(props: Props) {
         //   (obstaclesRef.current?.includes(bodyA) || obstaclesRef.current?.includes(bodyB)) &&
         //   (bodyA === ballRef.current || bodyB === ballRef.current)
         // ) {
+        //   countPins()
         //   // reset
         //   Matter.Body.setPosition(ballRef.current, INITIAL_BALL_POSITION)
         //   Matter.Body.setStatic(ballRef.current, true)
@@ -153,20 +154,38 @@ export default function Stage(props: Props) {
     // スコアを更新する
     props.setScore(pinsCount)
 
-		setGameScores((prevGameScores) => {
-			if (prevGameScores.length === 0 || prevGameScores[prevGameScores.length - 1].stageNumber !== props.stageNumber) {
-				console.log("1st throw")
-				return [...prevGameScores, { stageNumber: props.stageNumber, firstThrow: pinsCount, secondThrow: null, sumScore: null, totalScore: null }]
-			}
-			console.log("2nd throw")
-			return prevGameScores.map((gameScore) => {
-				if (gameScore.stageNumber === props.stageNumber && gameScore.firstThrow != null) {
-					return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow }
-				}
-				return gameScore
-			})
-		})
+    setGameScores((prevGameScores) => {
+      if (prevGameScores.length === 0 || prevGameScores[prevGameScores.length - 1].stageNumber !== props.stageNumber) {
+        console.log("1st throw")
+        return [
+          ...prevGameScores,
+          {
+            stageNumber: props.stageNumber,
+            firstThrow: pinsCount,
+            secondThrow: null,
+            sumScore: null,
+            totalScore: null,
+          },
+        ]
+      }
+      console.log("2nd throw")
+      return prevGameScores.map((gameScore) => {
+        if (gameScore.stageNumber === props.stageNumber && gameScore.firstThrow !== null) {
+          return { ...gameScore, secondThrow: pinsCount - gameScore.firstThrow! }
+        }
+        return gameScore
+      })
+    })
   }
+
+  useEffect(() => {
+    if (!gameScores.length) return
+    // 1投目ストライクもしくは2投目終了後にステージ変更
+    const lastGameScore = gameScores[gameScores.length - 1]
+    if (lastGameScore.firstThrow === 10 || lastGameScore.secondThrow !== null) {
+      props.handleNextStage()
+    }
+  }, [gameScores])
 
   function moveBallPositionX(dx: number) {
     if (!ballRef.current) return
@@ -189,11 +208,7 @@ export default function Stage(props: Props) {
 
   return (
     <>
-      <StageHeader
-        totalStageCount={props.totalStageCount}
-        score={props.score}
-        stageNumber={props.stageNumber}
-      />
+      <StageHeader totalStageCount={props.totalStageCount} score={props.score} stageNumber={props.stageNumber} />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
       <Button
         onClick={() => {
@@ -214,7 +229,7 @@ export default function Stage(props: Props) {
       </Button>
       {/* FIXME: これを消す */}
       <Button onClick={props.handleNextStage}>Next Stage</Button>
-			<Button onClick={() => console.log(gameScores)}>gameScores</Button>
+      <Button onClick={() => console.log(gameScores)}>gameScores</Button>
     </>
   )
 }
