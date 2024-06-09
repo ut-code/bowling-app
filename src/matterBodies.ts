@@ -77,7 +77,7 @@ export function createPins(pins: Pin[]) {
   return pins.map((position) =>
     Matter.Bodies.circle(position.x, position.y, 6, {
       isStatic: true,
-      density: 1,
+      density: 0.1,
       render: {
         fillStyle: "white",
       },
