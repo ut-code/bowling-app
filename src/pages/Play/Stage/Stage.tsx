@@ -227,9 +227,6 @@ export default function Stage(props: Props) {
       >
         →
       </Button>
-      {/* FIXME: これを消す */}
-      <Button onClick={props.handleNextStage}>Next Stage</Button>
-      <Button onClick={() => console.log(gameScores)}>gameScores</Button>
     </>
   )
 }
