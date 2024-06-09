@@ -32,7 +32,15 @@ export default function App() {
   const [gameScores, setGameScores] = useState<GameScore[]>([])
 
   return (
-    <Grid container direction="column" alignItems="center" justifyContent="center" width={"100vw"} spacing={2} style={{ margin: "8px" }}>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      width={"100vw"}
+      spacing={2}
+      style={{ margin: "8px" }}
+    >
       {uiState === "Start" && <Start setUiState={setUiState} />}
       {uiState === "Play" && <Play setUiState={setUiState} gameScores={gameScores} setGameScores={setGameScores} />}
       {uiState === "Score" && <Score setUiState={setUiState} gameScores={gameScores} />}

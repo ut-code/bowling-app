@@ -18,7 +18,7 @@ export default function Score(props: Props) {
           { stageNumber: 1, firstThrow: 3, secondThrow: 4, totalScore: 150 },
           { stageNumber: 2, firstThrow: 5, secondThrow: 5, totalScore: 200 },
           { stageNumber: 3, firstThrow: 10, secondThrow: null, totalScore: 240 },
-      ]
+        ]
 
   return (
     <div>

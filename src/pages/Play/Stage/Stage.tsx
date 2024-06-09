@@ -183,7 +183,7 @@ export default function Stage(props: Props) {
     return () => clearInterval(interval)
   }, [movedPins, props, props.stageElement.pins])
 
-  function moveBallPositionX (dx: number) {
+  function moveBallPositionX(dx: number) {
     if (!ballRef.current) return
     if (!arrowGuideRef.current) return
     const newPositionX = ballRef.current.position.x + dx
@@ -203,7 +203,12 @@ export default function Stage(props: Props) {
 
   return (
     <>
-      <StageHeader totalStageCount={props.totalStageCount} gameScores={props.gameScores} score={props.score} stageNumber={props.stageNumber} />
+      <StageHeader
+        totalStageCount={props.totalStageCount}
+        gameScores={props.gameScores}
+        score={props.score}
+        stageNumber={props.stageNumber}
+      />
       <div ref={canvasRef} style={{ position: "relative", width: "800px", height: "550px" }}></div>
       <Button
         onClick={() => {

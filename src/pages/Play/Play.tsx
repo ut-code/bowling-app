@@ -54,7 +54,7 @@ const stageElements: StageElements[] = [
       { x: 420, y: 50 },
       { x: 460, y: 50 },
     ],
-  }
+  },
 ]
 
 interface Props {
