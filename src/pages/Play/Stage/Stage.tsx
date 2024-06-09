@@ -233,7 +233,6 @@ export default function Stage(props: Props) {
   if (engineRef.current && arrowGuideRef.current) {
     Matter.World.remove(engineRef.current.world, arrowGuideRef.current)
   }
-}
 
   return (
     <>
