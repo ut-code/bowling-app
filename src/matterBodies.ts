@@ -2,50 +2,81 @@ import Matter from "matter-js"
 import { Obstacle, Pin } from "./App"
 import ballImg from "./assets/bowling_ball.png"
 
-export function createArrowGuide(ballPositionX: number) {
+export function createArrowGuide(ballPosition: {x: number, y: number}, arrowOffset: number) {
+  // 先端の三角形の**重心**。手動で計算。
+  const TRIANGLE_CENTER = -320
+
+  // 長方形の中心。手動で計算。
+  const RECTANGLE_CENTER = -150
+  
+  // 先端の三角形
+  const triangle = Matter.Bodies.fromVertices(
+    ballPosition.x,
+    ballPosition.y + arrowOffset + TRIANGLE_CENTER,
+    [
+      [
+        { x: 0, y: -360 },
+        { x: -50, y: -300 },
+        { x: 50, y: -300 },
+      ],
+    ],
+    {
+      isStatic: true,
+      collisionFilter: { category: 0x0001, mask: 0x0002 },
+      render: {
+        fillStyle: "rgba(255, 0, 0, 0.5)",
+      },
+    },
+  )
+
+  // 三角形の後ろの赤い四角形
+  const coloredRectangle = Matter.Bodies.fromVertices(
+    ballPosition.x,
+    ballPosition.y + arrowOffset + RECTANGLE_CENTER,
+    [
+      [
+        { x: 20, y: 0 },
+        { x: -20, y: 0 },
+        { x: 20, y: 300 },
+        { x: -20, y: 300 },
+      ],
+    ],
+    {
+      isStatic: true,
+      collisionFilter: { category: 0x0002, mask: 0x0002 },
+      render: {
+        fillStyle: "rgba(255, 0, 0, 0.5)",
+      },
+    },
+  )
+
   return Matter.Body.create({
     isStatic: true,
     collisionFilter: { category: 0x0001, mask: 0x0002 },
     parts: [
-      Matter.Bodies.fromVertices(
-        ballPositionX,
-        100,
-        [
-          [
-            { x: 400, y: 280 },
-            { x: 450, y: 350 },
-            { x: 350, y: 350 },
-          ],
-        ],
-        {
-          isStatic: true,
-          collisionFilter: { category: 0x0001, mask: 0x0002 },
-          render: {
-            fillStyle: "rgba(255, 0, 0, 0.5)",
-          },
-        },
-      ),
-      Matter.Bodies.fromVertices(
-        ballPositionX,
-        273,
-        [
-          [
-            { x: 20, y: 0 },
-            { x: -20, y: 0 },
-            { x: 20, y: 300 },
-            { x: -20, y: 300 },
-          ],
-        ],
-        {
-          isStatic: true,
-          collisionFilter: { category: 0x0002, mask: 0x0002 },
-          render: {
-            fillStyle: "rgba(255, 0, 0, 0.5)",
-          },
-        },
-      ),
+      triangle,
+      coloredRectangle,
     ],
   })
+}
+
+export function rotateArrowGuide(arrowGuide: Matter.Body | null, angle: number, pivotX: number, pivotY: number) {
+  if (!arrowGuide) return
+
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  // 重心から回転中心への相対位置を求める
+  const dx = arrowGuide.position.x - pivotX;
+  const dy = arrowGuide.position.y - pivotY;
+
+  // 回転後の新しい位置
+  const newX = pivotX + (dx * cos - dy * sin);
+  const newY = pivotY + (dx * sin + dy * cos);
+
+  // 物体の位置と角度を設定
+  Matter.Body.setPosition(arrowGuide, { x: newX, y: newY });
+  Matter.Body.setAngle(arrowGuide, arrowGuide.angle + angle);
 }
 
 export function createWalls(wallWidth: number) {
