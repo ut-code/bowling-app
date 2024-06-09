@@ -8,6 +8,7 @@ export type GameScore = {
   stageNumber: number
   firstThrow: number | null
   secondThrow: number | null
+  sumScore: number | null
   totalScore: number | null
 }
 
